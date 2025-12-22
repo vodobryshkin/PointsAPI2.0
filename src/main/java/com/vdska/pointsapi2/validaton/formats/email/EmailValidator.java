@@ -12,6 +12,6 @@ public class EmailValidator implements ConstraintValidator<Email, String> {
     @Override
     public boolean isValid(String name, ConstraintValidatorContext context) {
         if (name == null || name.isBlank()) return true;
-        return name.matches("^\\w+@\\w+\\.\\w{2}$");
+        return name.matches("^\\w+@\\w+\\.\\w{2,}$");
     }
 }
