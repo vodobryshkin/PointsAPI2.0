@@ -1,0 +1,314 @@
+openapi: 3.1.0
+info:
+  title: Points API 2.0
+  description: Points API 2.0
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080/api/v1/'
+    description: Локальная сеть
+  - url: 'http://91.236.79.123/api/v1/'
+    description: Продакшн
+components:
+  schemas:
+    # Объекты, связанные с процедурой регистрации и входа в аккаунт
+    RegisterRequest:
+      description: Объект, содержащий данные необходимые при регистрации пользователя
+      type: object
+      properties:
+        username:
+          description: Имя пользователя
+          type: string
+          example: vodobryshkin
+        email:
+          description: Электронная почта пользователя
+          type: string
+          example: vovadobryshkin@gmail.com
+        rawPassword:
+          description: Пароль, введённый пользователем
+          type: string
+          example: 12345678
+      required:
+        [username, email, rawPassword]
+
+    RegisterErrorResponse:
+      description: Объект, содержащий данные сформированные сервером после неудачной процедуры регистрации
+      type: object
+      properties:
+        status:
+          description: Статус завершения регистрации
+          type: boolean
+          enum:
+            - false
+        message:
+          description: Описание причины неудачного завершения операции
+          type: string
+          enum:
+            - USERNAME_ALREADY_TAKEN
+            - EMAIL_ALREADY_TAKEN
+            - USERNAME_NOT_VALID
+            - PASSWORD_NOT_VALID
+            - EMAIL_NOT_VALID
+      required: [ status, message ]
+
+    # Объекты, связанные с процедурой подтверждения аккаунта после регистрации
+    SendConfirmAccountLetterRequest:
+      description: Объект, содержащий данные необходимые для отправки письма с подтверждением аккаунта
+      type: object
+      properties:
+        email:
+          description: Электронная почта пользователя, на которую нужно прислать письмо подтверждения
+          type: string
+          example: vovadobryshkin@gmail.com
+      required: [email]
+
+    SendConfirmAccountLetterErrorResponse:
+      description: Объект, содержащий данные сформированные сервером после неудачной процедуры отправки письма для подтверждения аккаунта
+      type: object
+      properties:
+        status:
+          description: Статус завершения отправки письма подтверждения
+          type: boolean
+          enum:
+            - false
+        message:
+          description: Описание причины неудачного завершения операции отправки письма с ссылкой для подтверждения аккаунта
+          type: string
+          enum:
+            - EMAIL_NOT_VALID
+            - EMAIL_NOT_EXISTS
+      required: [status, message]
+
+    ConfirmAccountErrorResponse:
+      description: Объект, содержащий данные сформированные сервером после неудачной процедуры подтверждения аккаунта
+      type: object
+      properties:
+        status:
+          description: Статус завершения отправки письма подтверждения
+          type: boolean
+          enum:
+            - false
+        message:
+          description: Описание причины неудачного завершения операции подтверждения аккаунта
+          type: string
+          enum:
+            - LINK_NOT_VALID
+            - LINK_NOT_EXISTS
+      required: [ status, message ]
+
+    # Объекты, связанные со входом в аккаунт
+    LogInRequest:
+      description: Объект, содержащий данные необходимые для входа в аккаунт
+      type: object
+      properties:
+        username:
+          description: Имя пользователя, который хочет войти в аккаунт
+          type: string
+          example: vodobryshkin
+        rawPassword:
+          description: Пароль, введённый пользователем
+          type: string
+          example: 12345678
+      required: [username, rawPassword]
+
+    LogInResponse:
+      description: Объект, содержащий данные сформированные сервером после процедуры регистрации
+      type: object
+      properties:
+        status:
+          description: Статус завершения регистрации
+          type: boolean
+          example: true
+        otpRequired:
+          description: Информация о необходимости входа через OTP
+          type: boolean
+          enum:
+            - true
+      required: [ status, otpRequired ]
+
+    LogInErrorResponse:
+      description: Объект, содержащий данные сформированные сервером после неудачной процедуры входа в аккаунт
+      type: object
+      properties:
+        status:
+          description: Статус завершения входа в аккаунт
+          type: boolean
+          enum:
+            - false
+        message:
+          description: Описание причины неудачного завершения операции
+          type: string
+          enum:
+            - USERNAME_NOT_EXIST
+            - PASSWORD_NOT_MATCHES
+      required: [ status, message ]
+
+    # Объекты, связанные с процедурой 2FA по OTP
+    OTPRequest:
+      description: Объект, содержащий данные необходимые для входа в аккаунт по OTP
+      type: object
+      properties:
+        username:
+          description: Имя пользователя, который хочет войти в аккаунт
+          type: string
+          example: vodobryshkin
+        otpCode:
+          description: Шестизначный OTP-код на подтверждение
+          type: number
+          example: 123456
+      required: [ username, otpCode ]
+
+    OTPResponse:
+      description: Объект, содержащий данные сформированные сервером после обработки попытки входа по OTP
+      type: object
+      properties:
+        status:
+          description: Статус действия по OTP
+          type: boolean
+          enum:
+            - true
+      required: [ status ]
+
+    OTPErrorResponse:
+      description: Объект, содержащий данные сформированные сервером после неудачной обработки попытки входа по OTP
+      type: object
+      properties:
+        status:
+          description: Статус завершения входа в аккаунт по OTP
+          type: boolean
+          enum:
+            - false
+        message:
+          description: Описание причины неудачного завершения операции
+          type: string
+          enum:
+            - OTP_NOT_VALID
+            - OTP_EXPIRED
+      required: [ status, message ]
+
+paths:
+  /auth/register:
+    post:
+      summary: Регистрация пользователя в системе
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '204':
+          description: Ok
+        '409':
+          description: Пользователь с таким именем пользователя/адресом электронной почты уже существует
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterErrorResponse'
+        '422':
+          description: Один из credits, которые ввёл пользователь некорректные
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegisterErrorResponse'
+  /auth/confirm:
+    get:
+      summary: Подтверждение аккаунта пользователя
+      responses:
+        '204':
+          description: Ok
+        '410':
+          description: Время жизни ссылки истекло
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfirmAccountErrorResponse'
+        '422':
+          description: Ссылка семантически некорректна
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfirmAccountErrorResponse'
+
+    post:
+      summary: Запрос на отправку письма с ссылкой для подтверждения аккаунта
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendConfirmAccountLetterRequest'
+      responses:
+        '204':
+          description: Ok
+        '404':
+          description: Почта, на которую нужно прислать письмо, не существует в системе
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendConfirmAccountLetterErrorResponse'
+        '422':
+          description: Переданная почта невалидна
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendConfirmAccountLetterErrorResponse'
+  /auth/login:
+    post:
+      summary: Вход пользователя в аккаунт
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogInRequest'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogInResponse'
+        '401':
+          description: Пользователь ввёл неверные логин или пароль, ввиду чего не аутентифицирован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogInErrorResponse'
+        '422':
+          description: Пользователь ввёл семантически неверные логин или пароль, ввиду чего не аутентифицирован
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogInErrorResponse'
+
+  /auth/otp:
+    get:
+      summary: Запрос на отправку OTP-кода
+      responses:
+        '204':
+          description: Ok
+        '404':
+          description: Пользователя с логином из токена не существует
+    post:
+      summary: Запрос на отправку письма с ссылкой для подтверждения аккаунта
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OTPRequest'
+      responses:
+        '204':
+          description: Ok
+        '404':
+          description: Пользователь отправил несуществующий OTP-код
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OTPErrorResponse'
+        '422':
+          description: Пользователь отправил семантически неверный OTP-код
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OTPErrorResponse'
