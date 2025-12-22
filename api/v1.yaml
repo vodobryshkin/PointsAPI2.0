@@ -29,7 +29,6 @@ components:
           example: 12345678
       required:
         [username, email, rawPassword]
-
     RegisterErrorResponse:
       description: Объект, содержащий данные сформированные сервером после неудачной процедуры регистрации
       type: object
@@ -49,7 +48,6 @@ components:
             - PASSWORD_NOT_VALID
             - EMAIL_NOT_VALID
       required: [ status, message ]
-
     # Объекты, связанные с процедурой подтверждения аккаунта после регистрации
     SendConfirmAccountLetterRequest:
       description: Объект, содержащий данные необходимые для отправки письма с подтверждением аккаунта
@@ -60,7 +58,6 @@ components:
           type: string
           example: vovadobryshkin@gmail.com
       required: [email]
-
     SendConfirmAccountLetterErrorResponse:
       description: Объект, содержащий данные сформированные сервером после неудачной процедуры отправки письма для подтверждения аккаунта
       type: object
@@ -77,7 +74,6 @@ components:
             - EMAIL_NOT_VALID
             - EMAIL_NOT_EXISTS
       required: [status, message]
-
     ConfirmAccountErrorResponse:
       description: Объект, содержащий данные сформированные сервером после неудачной процедуры подтверждения аккаунта
       type: object
@@ -94,7 +90,6 @@ components:
             - LINK_NOT_VALID
             - LINK_NOT_EXISTS
       required: [ status, message ]
-
     # Объекты, связанные со входом в аккаунт
     LogInRequest:
       description: Объект, содержащий данные необходимые для входа в аккаунт
@@ -109,7 +104,6 @@ components:
           type: string
           example: 12345678
       required: [username, rawPassword]
-
     LogInResponse:
       description: Объект, содержащий данные сформированные сервером после процедуры регистрации
       type: object
@@ -124,7 +118,6 @@ components:
           enum:
             - true
       required: [ status, otpRequired ]
-
     LogInErrorResponse:
       description: Объект, содержащий данные сформированные сервером после неудачной процедуры входа в аккаунт
       type: object
@@ -141,7 +134,6 @@ components:
             - USERNAME_NOT_EXIST
             - PASSWORD_NOT_MATCHES
       required: [ status, message ]
-
     # Объекты, связанные с процедурой 2FA по OTP
     OTPRequest:
       description: Объект, содержащий данные необходимые для входа в аккаунт по OTP
@@ -156,7 +148,6 @@ components:
           type: number
           example: 123456
       required: [ username, otpCode ]
-
     OTPResponse:
       description: Объект, содержащий данные сформированные сервером после обработки попытки входа по OTP
       type: object
@@ -167,7 +158,6 @@ components:
           enum:
             - true
       required: [ status ]
-
     OTPErrorResponse:
       description: Объект, содержащий данные сформированные сервером после неудачной обработки попытки входа по OTP
       type: object
@@ -280,7 +270,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LogInErrorResponse'
-
   /auth/otp:
     get:
       summary: Запрос на отправку OTP-кода
