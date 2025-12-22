@@ -28,7 +28,7 @@ public class AuthService implements IAuthService {
         if (userRepository.existsUserByUsername(registerRequest.getUsername())) {
             throw new UserAlreadyExistsException("USERNAME_ALREADY_TAKEN");
         }
-        if (userRepository.existsUserByEmail(registerRequest.getUsername())) {
+        if (userRepository.existsUserByEmail(registerRequest.getEmail())) {
             throw new UserAlreadyExistsException("EMAIL_ALREADY_TAKEN");
         }
 

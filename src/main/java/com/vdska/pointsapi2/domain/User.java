@@ -28,7 +28,7 @@ public class User {
     private String email;
 
     @Column(name = "password", nullable = false)
-    private boolean hashPassword;
+    private String password;
 
     @Column(name = "enabled", nullable = false)
     private boolean enabled;
