@@ -1,4 +1,4 @@
-package com.vdska.pointsapi2.logger;
+package com.vdska.pointsapi2.aspect.logging;
 
 import com.vdska.pointsapi2.dto.auth.AuthErrorResponse;
 import com.vdska.pointsapi2.dto.auth.RegisterRequest;
@@ -15,7 +15,7 @@ import java.util.Objects;
 @Aspect
 @Component
 @Slf4j
-public class AuthLoggingAspect {
+public class AuthAspect {
     @Pointcut("execution(public * com.vdska.pointsapi2.controller.AuthController.register(..))")
     public void registerControllerPointcutMethod(){}
 

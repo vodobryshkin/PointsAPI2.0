@@ -1,4 +1,4 @@
-package com.vdska.pointsapi2.logger;
+package com.vdska.pointsapi2.aspect.logging;
 
 import com.vdska.pointsapi2.dto.auth.AuthErrorResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Slf4j
-public class ValidationLoggingAspect {
+public class ValidationAspect {
     @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleValidationException(..))")
     public void validationControllerAdvicePointcutMethod(){}
 
