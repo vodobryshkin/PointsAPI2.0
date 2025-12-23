@@ -29,7 +29,7 @@ components:
           example: 12345678
       required:
         [username, email, rawPassword]
-    RegisterErrorResponse:
+    AuthErrorResponse:
       description: Объект, содержащий данные сформированные сервером после неудачной процедуры регистрации
       type: object
       properties:
@@ -47,6 +47,10 @@ components:
             - USERNAME_NOT_VALID
             - PASSWORD_NOT_VALID
             - EMAIL_NOT_VALID
+            - VALIDATION_ERRORS
+        validation_errors:
+          description: Ошибки валидации поступивших данных
+          type: object
       required: [ status, message ]
     # Объекты, связанные с процедурой подтверждения аккаунта после регистрации
     SendConfirmAccountLetterRequest:
@@ -193,13 +197,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegisterErrorResponse'
+                $ref: '#/components/schemas/AuthErrorResponse'
         '422':
           description: Один из credits, которые ввёл пользователь некорректные
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegisterErrorResponse'
+                $ref: '#/components/schemas/AuthErrorResponse'
   /auth/confirm:
     get:
       summary: Подтверждение аккаунта пользователя

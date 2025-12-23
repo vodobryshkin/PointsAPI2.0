@@ -40,7 +40,7 @@ public class AuthLoggingAspect {
      */
     @AfterReturning(pointcut = "registerControllerPointcutMethod()")
     public void logRegisterAfterReturningControllerMethod() {
-        log.info("Эндпойнт /auth/register успешно вернул ответ");
+        log.info("Эндпойнт /auth/register успешно вернул ответ.");
     }
 
     /**
