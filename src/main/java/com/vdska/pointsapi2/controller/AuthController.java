@@ -30,6 +30,8 @@ public class AuthController {
     public ResponseEntity<Void> register(@RequestBody @Valid RegisterRequest registerRequest) {
         authService.register(registerRequest);
 
+//        iMessageService.sendConfirmAccountMessageToQueue(new ConfirmAccountMailRequest("vova", "ok", "ok", "ok"));
+
         return ResponseEntity
                 .noContent()
                 .build();
