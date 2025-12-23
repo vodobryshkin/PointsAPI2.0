@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ConfirmAccountMailRequest {
-    private String username;
+    private String from;
     private String to;
     private String subject;
     private String link;

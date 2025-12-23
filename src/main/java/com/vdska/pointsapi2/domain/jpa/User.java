@@ -1,4 +1,4 @@
-package com.vdska.pointsapi2.domain;
+package com.vdska.pointsapi2.domain.jpa;
 
 import jakarta.persistence.*;
 import lombok.Getter;

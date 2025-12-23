@@ -1,7 +1,11 @@
 package com.vdska.pointsapi2.controller;
 
+import com.vdska.pointsapi2.domain.redis.ConfirmationLink;
 import com.vdska.pointsapi2.dto.auth.RegisterRequest;
+import com.vdska.pointsapi2.dto.mail.ConfirmAccountMailRequest;
 import com.vdska.pointsapi2.service.spec.IAuthService;
+import com.vdska.pointsapi2.service.spec.IConfirmationLinkService;
+import com.vdska.pointsapi2.service.spec.IMessageService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class AuthController {
     private IAuthService authService;
+    private IConfirmationLinkService confirmationLinkService;
+    private IMessageService messageService;
 
     /**
      * Метод для обработки запросов на эндпойнт /auth/register
@@ -30,7 +36,14 @@ public class AuthController {
     public ResponseEntity<Void> register(@RequestBody @Valid RegisterRequest registerRequest) {
         authService.register(registerRequest);
 
-//        iMessageService.sendConfirmAccountMessageToQueue(new ConfirmAccountMailRequest("vova", "ok", "ok", "ok"));
+        ConfirmationLink confirmationLink = confirmationLinkService.generateConfirmationLink(registerRequest.getUsername());
+        confirmationLinkService.saveConfirmationLink(confirmationLink);
+
+        messageService.sendConfirmAccountMessageToQueue(new ConfirmAccountMailRequest(
+                "vova",
+                registerRequest.getEmail(),
+                "ok",
+                confirmationLink.getId().toString()));
 
         return ResponseEntity
                 .noContent()

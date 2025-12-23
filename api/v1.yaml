@@ -117,7 +117,7 @@ components:
           type: boolean
           example: true
         otpRequired:
-          description: Информация о необходимости входа через OTP
+          description: Информация о необходимости входа через OneTimePassword
           type: boolean
           enum:
             - true
@@ -138,9 +138,9 @@ components:
             - USERNAME_NOT_EXIST
             - PASSWORD_NOT_MATCHES
       required: [ status, message ]
-    # Объекты, связанные с процедурой 2FA по OTP
+    # Объекты, связанные с процедурой 2FA по OneTimePassword
     OTPRequest:
-      description: Объект, содержащий данные необходимые для входа в аккаунт по OTP
+      description: Объект, содержащий данные необходимые для входа в аккаунт по OneTimePassword
       type: object
       properties:
         username:
@@ -148,26 +148,26 @@ components:
           type: string
           example: vodobryshkin
         otpCode:
-          description: Шестизначный OTP-код на подтверждение
+          description: Шестизначный OneTimePassword-код на подтверждение
           type: number
           example: 123456
       required: [ username, otpCode ]
     OTPResponse:
-      description: Объект, содержащий данные сформированные сервером после обработки попытки входа по OTP
+      description: Объект, содержащий данные сформированные сервером после обработки попытки входа по OneTimePassword
       type: object
       properties:
         status:
-          description: Статус действия по OTP
+          description: Статус действия по OneTimePassword
           type: boolean
           enum:
             - true
       required: [ status ]
     OTPErrorResponse:
-      description: Объект, содержащий данные сформированные сервером после неудачной обработки попытки входа по OTP
+      description: Объект, содержащий данные сформированные сервером после неудачной обработки попытки входа по OneTimePassword
       type: object
       properties:
         status:
-          description: Статус завершения входа в аккаунт по OTP
+          description: Статус завершения входа в аккаунт по OneTimePassword
           type: boolean
           enum:
             - false
@@ -276,7 +276,7 @@ paths:
                 $ref: '#/components/schemas/LogInErrorResponse'
   /auth/otp:
     get:
-      summary: Запрос на отправку OTP-кода
+      summary: Запрос на отправку OneTimePassword-кода
       responses:
         '204':
           description: Ok
@@ -294,13 +294,13 @@ paths:
         '204':
           description: Ok
         '404':
-          description: Пользователь отправил несуществующий OTP-код
+          description: Пользователь отправил несуществующий OneTimePassword-код
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/OTPErrorResponse'
         '422':
-          description: Пользователь отправил семантически неверный OTP-код
+          description: Пользователь отправил семантически неверный OneTimePassword-код
           content:
             application/json:
               schema:

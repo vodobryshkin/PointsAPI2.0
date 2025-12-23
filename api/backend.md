@@ -2,9 +2,8 @@
 ## Стек
 - Spring Boot 4
 - Java 21
-- PostgreSQL
-- MinIO
-- Redis (?)
+- RabbitMQ
+- Redis
 
 ## Описание функциональности
 1. Функциональность, связанная с пользователем
