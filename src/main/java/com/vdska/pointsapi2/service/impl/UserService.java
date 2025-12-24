@@ -4,7 +4,7 @@ import com.vdska.pointsapi2.dto.auth.RegisterRequest;
 import com.vdska.pointsapi2.exception.UserAlreadyExistsException;
 import com.vdska.pointsapi2.mapper.IUserMapper;
 import com.vdska.pointsapi2.repository.IUserRepository;
-import com.vdska.pointsapi2.service.spec.IAuthService;
+import com.vdska.pointsapi2.service.spec.IUserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @AllArgsConstructor
-public class AuthService implements IAuthService {
+public class UserService implements IUserService {
     private IUserRepository userRepository;
     private IUserMapper userMapper;
     private PasswordEncoder passwordEncoder;
