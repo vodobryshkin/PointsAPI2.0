@@ -13,6 +13,17 @@ create table authorities (
                              authority varchar(50)
 );
 
+insert into users values (uuid '000aed89-3083-4b86-a3cb-6e0a11dd4348',
+                          'dobryak',
+                          'dobryshkinvladimir@yandex.ru',
+                          '$2a$10$eJKuoB7EcTqBn827KJmRSuTx1Ap5lzEssRWECLEsoma5bU6k7qe/C',
+                          true,
+                          true);
+
+insert into authorities values ( uuid 'a33acb27-f5bf-407b-87f9-cbd450e903cb',
+                                'dobryak',
+                                'ADMIN');
+
 create trigger add_role_user_authority
     after insert on users
     for each row
