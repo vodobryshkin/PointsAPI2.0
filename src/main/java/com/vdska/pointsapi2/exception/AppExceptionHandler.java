@@ -1,6 +1,6 @@
 package com.vdska.pointsapi2.exception;
 
-import com.vdska.pointsapi2.dto.auth.AuthErrorResponse;
+import com.vdska.pointsapi2.dto.user.AuthErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -23,6 +23,10 @@ public class AppExceptionHandler {
             new AuthErrorResponse(false, "EMAIL_ALREADY_TAKEN", null);
     private static final AuthErrorResponse BAD_REQUEST =
             new AuthErrorResponse(false, "BAD_REQUEST", null);
+    private static final AuthErrorResponse CONFIRMATION_LINK_NOT_VALID =
+            new AuthErrorResponse(false, "LINK_NOT_VALID", null);
+    private static final AuthErrorResponse USER_NOT_FOUND =
+            new AuthErrorResponse(false, "USER_NOT_FOUND", null);
     
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<AuthErrorResponse> handleRegisterException(UserAlreadyExistsException e) {
@@ -46,5 +50,20 @@ public class AppExceptionHandler {
 
         return new ResponseEntity<>(new AuthErrorResponse(false, "VALIDATION_ERROR", errors),
                 HttpStatus.UNPROCESSABLE_CONTENT);
+    }
+
+    @ExceptionHandler(ConfirmationLinkNotValidException.class)
+    public ResponseEntity<AuthErrorResponse> handleConfirmationException(ConfirmationLinkNotValidException e) {
+        return new ResponseEntity<>(CONFIRMATION_LINK_NOT_VALID, HttpStatus.GONE);
+    }
+
+    @ExceptionHandler(CreditsException.class)
+    public ResponseEntity<AuthErrorResponse> handleCreditsException(CreditsException e) {
+        String message = e.getMessage();
+
+        return switch (message) {
+            case "USER_NOT_FOUND" -> new ResponseEntity<>(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+            default -> new ResponseEntity<>(BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        };
     }
 }

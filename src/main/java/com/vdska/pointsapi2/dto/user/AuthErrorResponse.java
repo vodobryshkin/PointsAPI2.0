@@ -1,4 +1,4 @@
-package com.vdska.pointsapi2.dto.auth;
+package com.vdska.pointsapi2.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

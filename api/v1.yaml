@@ -92,7 +92,11 @@ components:
           type: string
           enum:
             - LINK_NOT_VALID
-            - LINK_NOT_EXISTS
+            - VALIDATION_ERRORS
+            - USER_NOT_FOUND
+        validation_errors:
+          description: Ошибки валидации поступивших данных
+          type: object
       required: [ status, message ]
     # Объекты, связанные со входом в аккаунт
     LogInRequest:
@@ -210,6 +214,12 @@ paths:
       responses:
         '204':
           description: Ok
+        '404':
+          description: Пользователь, аккаунт которого подтверждался, не существует
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfirmAccountErrorResponse'
         '410':
           description: Время жизни ссылки истекло
           content:

@@ -1,7 +1,7 @@
 package com.vdska.pointsapi2.service.spec;
 
 
-import com.vdska.pointsapi2.dto.auth.RegisterRequest;
+import com.vdska.pointsapi2.dto.user.RegisterRequest;
 
 /**
  * Интерфейс для определения функциональности UserService
@@ -13,4 +13,11 @@ public interface IUserService {
      * @param registerRequest запрос на регистрацию пользователя.
      */
     void register(RegisterRequest registerRequest);
+
+    /**
+     * Метод для верификации нового пользователя в системе.
+     *
+     * @param username имя пользователя для верификации.
+     */
+    void verify(String username);
 }

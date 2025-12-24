@@ -1,12 +1,14 @@
 package com.vdska.pointsapi2.service.impl;
 
 import com.vdska.pointsapi2.domain.redis.ConfirmationLink;
+import com.vdska.pointsapi2.dto.confirm.VerifyResponse;
 import com.vdska.pointsapi2.repository.IConfirmationLinkRepository;
 import com.vdska.pointsapi2.service.spec.IConfirmationLinkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -19,6 +21,28 @@ public class ConfirmationLinkService implements IConfirmationLinkService {
     private Long ttl;
 
     private final IConfirmationLinkRepository confirmationLinkRepository;
+    private static final VerifyResponse INVALID_TOKEN = new VerifyResponse(false, null);
+
+
+    /**
+     * Метод для подтверждения корректности ссылки на подтверждение аккаунта
+     *
+     * @param id id ссылки
+     */
+    @Override
+    public VerifyResponse verifyConfirmationLink(String id) {
+        UUID uuid = UUID.fromString(id);
+        Optional<ConfirmationLink> confirmationLinkOptional = confirmationLinkRepository.findById(uuid);
+
+        if (confirmationLinkOptional.isPresent()) {
+            String username = confirmationLinkOptional.get().getUsername();
+            confirmationLinkRepository.removeConfirmationLinkById(uuid);
+
+            return new VerifyResponse(true, username);
+        }
+
+        return INVALID_TOKEN;
+    }
 
     /**
      * Метод для генерации ссылки на подтверждение аккаунта

@@ -1,7 +1,7 @@
 package com.vdska.pointsapi2.aspect.logging;
 
-import com.vdska.pointsapi2.dto.auth.AuthErrorResponse;
-import com.vdska.pointsapi2.dto.auth.RegisterRequest;
+import com.vdska.pointsapi2.dto.user.AuthErrorResponse;
+import com.vdska.pointsapi2.dto.user.RegisterRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -22,7 +22,7 @@ public class AuthAspect {
     @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleRegisterException(..))")
     public void registerControllerAdvicePointcutMethod(){}
 
-    @Pointcut("execution(public * com.vdska.pointsapi2.service.impl.AuthService.register(..))")
+    @Pointcut("execution(public * com.vdska.pointsapi2.service.impl.UserService.register(..))")
     public void registerServicePointcutMethod(){}
 
     /**

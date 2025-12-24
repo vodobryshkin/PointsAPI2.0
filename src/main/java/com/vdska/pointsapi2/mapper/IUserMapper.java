@@ -1,7 +1,7 @@
 package com.vdska.pointsapi2.mapper;
 
 import com.vdska.pointsapi2.domain.jpa.User;
-import com.vdska.pointsapi2.dto.auth.RegisterRequest;
+import com.vdska.pointsapi2.dto.user.RegisterRequest;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

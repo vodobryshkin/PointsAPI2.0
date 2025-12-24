@@ -1,4 +1,4 @@
-package com.vdska.pointsapi2.dto.auth;
+package com.vdska.pointsapi2.dto.user;
 
 import com.vdska.pointsapi2.validaton.formats.email.Email;
 import com.vdska.pointsapi2.validaton.formats.password.Password;

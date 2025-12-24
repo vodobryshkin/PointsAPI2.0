@@ -1,6 +1,6 @@
 package com.vdska.pointsapi2.aspect.logging;
 
-import com.vdska.pointsapi2.dto.auth.AuthErrorResponse;
+import com.vdska.pointsapi2.dto.user.AuthErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
