@@ -5,7 +5,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.stereotype.Component;
 
 /**
- * Валидатор для обработки пароля, переданного пользователем
+ * Валидатор для обработки почты, переданной пользователем
  */
 @Component
 public class EmailValidator implements ConstraintValidator<Email, String> {
