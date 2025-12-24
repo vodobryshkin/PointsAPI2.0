@@ -24,7 +24,7 @@ public class MailServiceAspect {
         String username = request.getUsername();
         String email = request.getTo();
 
-        log.info("Письмо с ссылкой на подтверждение аккаунта для пользователя с username='{}' было отправлено на email {}.", username, email);
+        log.debug("Письмо с ссылкой на подтверждение аккаунта для пользователя с username='{}' было отправлено на email {}.", username, email);
         return result;
     }
 

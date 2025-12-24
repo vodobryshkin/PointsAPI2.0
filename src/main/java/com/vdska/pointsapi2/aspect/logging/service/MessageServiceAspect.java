@@ -24,7 +24,7 @@ public class MessageServiceAspect {
         String username = request.getUsername();
         String email = request.getTo();
 
-        log.info("Данные для письма на подтверждение аккаунта для пользователя с username='{}' и email='{}' были отправлены в очередь сообщений.", username, email);
+        log.debug("Данные для письма на подтверждение аккаунта для пользователя с username='{}' и email='{}' были отправлены в очередь сообщений.", username, email);
         return result;
     }
 }

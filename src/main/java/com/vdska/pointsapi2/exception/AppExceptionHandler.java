@@ -1,13 +1,17 @@
 package com.vdska.pointsapi2.exception;
 
 import com.vdska.pointsapi2.dto.user.AuthErrorResponse;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -51,6 +55,29 @@ public class AppExceptionHandler {
         return new ResponseEntity<>(new AuthErrorResponse(false, "VALIDATION_ERROR", errors),
                 HttpStatus.UNPROCESSABLE_CONTENT);
     }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<AuthErrorResponse> handleHandlerMethodValidationException(HandlerMethodValidationException ex) {
+
+        Map<String, List<String>> errors = ex.getAllErrors().stream()
+                .collect(Collectors.groupingBy(
+                        err -> {
+                            if (err instanceof FieldError fe) return fe.getField();
+                            if (err instanceof ObjectError oe) return oe.getObjectName();
+                            return "request";
+                        },
+                        LinkedHashMap::new,
+                        Collectors.mapping(
+                                MessageSourceResolvable::getDefaultMessage,
+                                Collectors.toList()
+                        )
+                ));
+
+        return new ResponseEntity<>(new AuthErrorResponse(false, "VALIDATION_ERROR", errors),
+                HttpStatus.UNPROCESSABLE_CONTENT);
+    }
+
+
 
     @ExceptionHandler(ConfirmationLinkNotValidException.class)
     public ResponseEntity<AuthErrorResponse> handleConfirmationException(ConfirmationLinkNotValidException e) {

@@ -29,21 +29,21 @@ public class ConfirmationLinkAspectServiceAspect {
 
         String id = (String) pjp.getArgs()[0];
 
-        log.info("Началась попытка верификации ссылки на подтверждение аккаунта с id='{}'", id);
+        log.debug("Началась попытка верификации ссылки на подтверждение аккаунта с id='{}'", id);
 
         try {
             result = pjp.proceed();
             VerifyResponse verifyResponse = (VerifyResponse) result;
 
             if (verifyResponse.isStatus()) {
-                log.info("Ссылка с id='{}' была верифицирована как корректная. Пользователь: {}.", id, verifyResponse.getUsername());
+                log.debug("Ссылка с id='{}' была верифицирована как корректная. Пользователь: {}.", id, verifyResponse.getUsername());
             } else {
-                log.info("Ссылка с id='{}' не прошла верификацию.", id);
+                log.debug("Ссылка с id='{}' не прошла верификацию.", id);
             }
 
             return result;
         } finally {
-            log.info("Метод верификации ссылки на подтверждение аккаунта завершился. Время выполнения {} ms.", System.currentTimeMillis() - startTime);
+            log.debug("Метод верификации ссылки на подтверждение аккаунта завершился. Время выполнения {} ms.", System.currentTimeMillis() - startTime);
         }
     }
 
@@ -54,7 +54,7 @@ public class ConfirmationLinkAspectServiceAspect {
 
         String username = ((String) pjp.getArgs()[0]);
 
-        log.info("Была создана ссылка на подтверждение аккаунта для пользователя c username='{}'.", username);
+        log.debug("Была создана ссылка на подтверждение аккаунта для пользователя c username='{}'.", username);
 
         return result;
     }
@@ -66,7 +66,7 @@ public class ConfirmationLinkAspectServiceAspect {
 
         String username = ((ConfirmationLink) pjp.getArgs()[0]).getUsername();
 
-        log.info("Ссылка на подтверждение аккаунта для пользователя с username='{}' была сохранена в хранилище.", username);
+        log.debug("Ссылка на подтверждение аккаунта для пользователя с username='{}' была сохранена в хранилище.", username);
 
         return result;
     }

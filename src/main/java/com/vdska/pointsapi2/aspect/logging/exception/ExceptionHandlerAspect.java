@@ -26,6 +26,9 @@ public class ExceptionHandlerAspect {
     @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleInvalidCreditsOfConfirmationUserException(..))")
     public void handleInvalidCreditsOfConfirmationUserExceptionPointcutMethod(){}
 
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleHandlerMethodValidationException(..))")
+    public void handleHandlerMethodValidationExceptionPointcutMethod(){}
+
     @AfterReturning(
             pointcut = "handleRegisterExceptionPointcutMethod()",
             returning = "response")
@@ -36,14 +39,14 @@ public class ExceptionHandlerAspect {
     }
 
     @AfterReturning(
-            pointcut = "handleValidationExceptionPointcutMethod()",
+            pointcut = "handleValidationExceptionPointcutMethod() || handleHandlerMethodValidationExceptionPointcutMethod()",
             returning = "response")
     public void logHandleValidationExceptionAfterReturning(ResponseEntity<AuthErrorResponse> response) {
-        log.info("Запрос не прошёл валидацию: body='{}'.", response.getBody());
+        log.debug("Запрос не прошёл валидацию: body='{}'.", response.getBody());
     }
 
     @AfterReturning(
-            pointcut = "handleConfirmationExceptionPointcutMethod(), handleConfirmationExceptionPointcutMethod()",
+            pointcut = "handleConfirmationExceptionPointcutMethod()",
             returning = "response")
     public void logHandleConfirmationExceptionAfterReturning(ResponseEntity<AuthErrorResponse> response) {
         log.info("Эндпойнт /auth/confirm вернул ответ c ошибкой: message='{}'.", response.getBody());

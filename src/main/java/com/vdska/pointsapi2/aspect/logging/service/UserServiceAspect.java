@@ -29,18 +29,18 @@ public class UserServiceAspect {
         String username = authRequest.getUsername();
         String email = authRequest.getEmail();
 
-        log.info("Началась обработка попытки регистрации пользователя с username='{}' и email='{}'.", username, email);
+        log.debug("Началась обработка попытки регистрации пользователя с username='{}' и email='{}'.", username, email);
 
         try {
             result = pjp.proceed();
-            log.info("Регистрация пользователя с username='{}' и email='{}' прошла успешно.", username, email);
+            log.debug("Регистрация пользователя с username='{}' и email='{}' прошла успешно.", username, email);
             return result;
         } catch (UsernameNotFoundException usernameNotFoundException) {
             String reason = usernameNotFoundException.getMessage().equals("USERNAME_ALREADY_TAKEN") ? "username" : "email";
-            log.info("Регистрация пользователя с username='{}' и email='{}' завершилась неудачно. Пользователь с таким {} уже существует.", username, email, reason);
+            log.debug("Регистрация пользователя с username='{}' и email='{}' завершилась неудачно. Пользователь с таким {} уже существует.", username, email, reason);
             throw usernameNotFoundException;
         } finally {
-            log.info("Метод регистрации завершился. Время выполнения {} ms.", System.currentTimeMillis() - startTime);
+            log.debug("Метод регистрации завершился. Время выполнения {} ms.", System.currentTimeMillis() - startTime);
         }
     }
 
@@ -51,17 +51,17 @@ public class UserServiceAspect {
 
         String username = (String) pjp.getArgs()[0];
 
-        log.info("Началось подтверждение аккаунта пользователя с username='{}'.", username);
+        log.debug("Началось подтверждение аккаунта пользователя с username='{}'.", username);
 
         try {
             result = pjp.proceed();
-            log.info("Аккаунт пользователя с username='{}' был успешно подтверждён.", username);
+            log.debug("Аккаунт пользователя с username='{}' был успешно подтверждён.", username);
             return result;
         } catch (InvalidCreditsOfConfirmationUserException usernameNotFoundException) {
-            log.info("Подтверждение аккаунта пользователя с username='{}' завершилось неудачно. Пользователя с таким username не существует.", username);
+            log.debug("Подтверждение аккаунта пользователя с username='{}' завершилось неудачно. Пользователя с таким username не существует.", username);
             throw usernameNotFoundException;
         } finally {
-            log.info("Метод подтверждения аккаунта пользователя завершился. Время выполнения {} ms.", System.currentTimeMillis() - startTime);
+            log.debug("Метод подтверждения аккаунта пользователя завершился. Время выполнения {} ms.", System.currentTimeMillis() - startTime);
         }
     }
 }
