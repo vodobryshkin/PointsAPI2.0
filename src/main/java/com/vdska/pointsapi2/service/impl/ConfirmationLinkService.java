@@ -36,7 +36,7 @@ public class ConfirmationLinkService implements IConfirmationLinkService {
 
         if (confirmationLinkOptional.isPresent()) {
             String username = confirmationLinkOptional.get().getUsername();
-            confirmationLinkRepository.removeConfirmationLinkById(uuid);
+            confirmationLinkRepository.deleteById(uuid);
 
             return new VerifyResponse(true, username);
         }

@@ -11,5 +11,4 @@ import java.util.UUID;
  */
 @Repository
 public interface IConfirmationLinkRepository extends CrudRepository<ConfirmationLink, UUID> {
-    void removeConfirmationLinkById(UUID id);
 }
