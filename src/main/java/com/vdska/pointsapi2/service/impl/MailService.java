@@ -1,6 +1,7 @@
 package com.vdska.pointsapi2.service.impl;
 
 import com.vdska.pointsapi2.dto.mail.ConfirmAccountMailRequest;
+import com.vdska.pointsapi2.dto.mail.OTPMailRequest;
 import com.vdska.pointsapi2.service.spec.IMailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -41,23 +42,23 @@ public class MailService implements IMailService {
         sendMessage(confirmAccountMailRequest.getTo(), confirmAccountMailRequest.getSubject(), htmlContent);
     }
 
-//    /**
-//     * Метод для отправки письма с OTP.
-//     *
-//     * @param otpMailRequest запрос на отправку письма.
-//     */
-//    @Async
-//    public void sendOTPLetter(OTPMailRequest otpMailRequest) {
-//        Context context = new Context();
-//        context.setVariable("username", otpMailRequest.getUsername());
-//        context.setVariable("date", otpMailRequest.getDate());
-//        context.setVariable("userAgent", otpMailRequest.getUserAgent());
-//        context.setVariable("otpCode", otpMailRequest.getCode());
-//
-//        String htmlContent = templateEngine.process("otp", context);
-//
-//        sendMessage(otpMailRequest.getTo(), otpMailRequest.getSubject(), htmlContent);
-//    }
+    /**
+     * Метод для отправки письма с OTP.
+     *
+     * @param otpMailRequest DTO с данными на отправку письма.
+     */
+    @Override
+    public void sendOTPLetter(OTPMailRequest otpMailRequest) {
+        Context context = new Context();
+        context.setVariable("username", otpMailRequest.getUsername());
+        context.setVariable("otpCode", otpMailRequest.getCode());
+        context.setVariable("userAgent", otpMailRequest.getUserAgent());
+        context.setVariable("date", otpMailRequest.getDate());
+
+        String htmlContent = templateEngine.process("otp", context);
+
+        sendMessage(otpMailRequest.getTo(), otpMailRequest.getSubject(), htmlContent);
+    }
 
     private void sendMessage(String to, String subject, String htmlContent) {
         try {

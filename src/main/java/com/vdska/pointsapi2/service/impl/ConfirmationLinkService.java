@@ -1,7 +1,7 @@
 package com.vdska.pointsapi2.service.impl;
 
 import com.vdska.pointsapi2.domain.redis.ConfirmationLink;
-import com.vdska.pointsapi2.dto.confirm.VerifyResponse;
+import com.vdska.pointsapi2.dto.token.VerifyResponse;
 import com.vdska.pointsapi2.repository.IConfirmationLinkRepository;
 import com.vdska.pointsapi2.service.spec.IConfirmationLinkService;
 import lombok.RequiredArgsConstructor;

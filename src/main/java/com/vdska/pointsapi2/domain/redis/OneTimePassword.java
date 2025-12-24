@@ -7,25 +7,24 @@ import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 /**
- * Сущность "Ссылка для подтверждения аккаунта"
+ * Сущность "Одноразовый пароль"
  */
 @Getter
 @Setter
-@RedisHash("ConfirmationLink")
-public class ConfirmationLink implements Serializable {
+@RedisHash("OneTimePassword")
+public class OneTimePassword implements Serializable {
     @Id
-    private UUID id;
+    private String code;
 
     private String username;
 
     @TimeToLive
     private Long ttlSeconds;
 
-    public ConfirmationLink(UUID id, String username, Long ttlSeconds) {
-        this.id = id;
+    public OneTimePassword(String code, String username, Long ttlSeconds) {
+        this.code = code;
         this.username = username;
         this.ttlSeconds = ttlSeconds;
     }

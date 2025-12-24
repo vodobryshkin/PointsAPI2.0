@@ -1,17 +1,16 @@
 package com.vdska.pointsapi2.controller;
 
 import com.vdska.pointsapi2.domain.redis.ConfirmationLink;
-import com.vdska.pointsapi2.dto.confirm.VerifyResponse;
+import com.vdska.pointsapi2.domain.redis.OneTimePassword;
+import com.vdska.pointsapi2.dto.mail.OTPMailRequest;
+import com.vdska.pointsapi2.dto.token.VerifyResponse;
 import com.vdska.pointsapi2.dto.user.LoginRequest;
 import com.vdska.pointsapi2.dto.user.LoginResponse;
 import com.vdska.pointsapi2.dto.user.RegisterRequest;
 import com.vdska.pointsapi2.dto.mail.ConfirmAccountMailRequest;
 import com.vdska.pointsapi2.exception.ConfirmationLinkNotValidException;
 import com.vdska.pointsapi2.exception.CreditsException;
-import com.vdska.pointsapi2.service.spec.IJWTService;
-import com.vdska.pointsapi2.service.spec.IUserService;
-import com.vdska.pointsapi2.service.spec.IConfirmationLinkService;
-import com.vdska.pointsapi2.service.spec.IMessageService;
+import com.vdska.pointsapi2.service.spec.*;
 import com.vdska.pointsapi2.validaton.formats.uuid.UUID;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +39,7 @@ public class AuthController {
     private final IMessageService messageService;
     private final IJWTService jwtService;
     private final UserDetailsService userDetailsService;
+    private final IOneTimePasswordService oneTimePasswordService;
 
     /**
      * Метод для обработки запросов на эндпойнт /auth/register
@@ -72,12 +72,27 @@ public class AuthController {
      */
     @PostMapping("/auth/login")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest,
+                                               @RequestHeader(value = "User-Agent", required = false) String userAgent,
+                                               @RequestHeader(value = "Date", required = false) String dateHeader) {
         LoginResponse loginResponse = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
 
         if (!loginResponse.isStatus()) {
             throw new CreditsException("PASSWORD_NOT_MATCHES");
         }
+
+        OneTimePassword oneTimePassword = oneTimePasswordService.generateOTP(loginRequest.getUsername());
+        oneTimePasswordService.saveOTP(oneTimePassword);
+
+        String email = userService.getEmail(loginRequest.getUsername());
+
+        messageService.sendOTPMessageToQueue(new OTPMailRequest(
+                loginRequest.getUsername(),
+                email,
+                "Вход в аккаунт",
+                oneTimePassword.getCode(),
+                dateHeader,
+                userAgent));
 
         return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     }

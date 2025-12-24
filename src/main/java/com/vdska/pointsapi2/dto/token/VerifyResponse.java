@@ -1,4 +1,4 @@
-package com.vdska.pointsapi2.dto.confirm;
+package com.vdska.pointsapi2.dto.token;
 
 import lombok.Value;
 

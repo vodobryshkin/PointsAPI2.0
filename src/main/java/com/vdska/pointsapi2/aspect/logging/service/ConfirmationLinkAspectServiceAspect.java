@@ -1,7 +1,7 @@
 package com.vdska.pointsapi2.aspect.logging.service;
 
 import com.vdska.pointsapi2.domain.redis.ConfirmationLink;
-import com.vdska.pointsapi2.dto.confirm.VerifyResponse;
+import com.vdska.pointsapi2.dto.token.VerifyResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

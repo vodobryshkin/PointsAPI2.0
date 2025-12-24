@@ -18,8 +18,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @Setter
 public class RabbitMqConfig {
-    @Value("${mail.queue.name}")
-    private String queueName;
+    @Value("${mail.confirm.queue.name}")
+    private String confirmQueueName;
+
+    @Value("${mail.otp.queue.name}")
+    private String otpQueueName;
 
     @Value("${spring.rabbitmq.username}")
     private String username;
@@ -31,8 +34,13 @@ public class RabbitMqConfig {
     private String host;
 
     @Bean
-    public Queue queue() {
-        return new Queue(queueName);
+    public Queue confirmQueue() {
+        return new Queue(confirmQueueName);
+    }
+
+    @Bean
+    public Queue otpQueue() {
+        return new Queue(otpQueueName);
     }
 
     @Bean

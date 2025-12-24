@@ -15,7 +15,7 @@ create table authorities (
 
 insert into users values (uuid '000aed89-3083-4b86-a3cb-6e0a11dd4348',
                           'dobryak',
-                          'dobryshkinvladimir@yandex.ru',
+                          'vovadobryshkin@gmail.com',
                           '$2a$10$eJKuoB7EcTqBn827KJmRSuTx1Ap5lzEssRWECLEsoma5bU6k7qe/C',
                           true,
                           true);

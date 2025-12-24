@@ -1,7 +1,7 @@
 package com.vdska.pointsapi2.service.spec;
 
 import com.vdska.pointsapi2.domain.redis.ConfirmationLink;
-import com.vdska.pointsapi2.dto.confirm.VerifyResponse;
+import com.vdska.pointsapi2.dto.token.VerifyResponse;
 
 /**
  * Интерфейс для определения функциональности ConfirmationLinkService
