@@ -51,6 +51,7 @@ public class UserService implements IUserService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             user.setVerified(true);
+            userRepository.save(user);
         } else {
             throw new InvalidCreditsOfConfirmationUserException("USER_NOT_FOUND");
         }
