@@ -31,6 +31,8 @@ public class AppExceptionHandler {
             new AuthErrorResponse(false, "LINK_NOT_VALID", null);
     private static final AuthErrorResponse USER_NOT_FOUND =
             new AuthErrorResponse(false, "USER_NOT_FOUND", null);
+    private static final AuthErrorResponse PASSWORD_NOT_MATCHES =
+            new AuthErrorResponse(false, "PASSWORD_NOT_MATCHES", null);
     
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<AuthErrorResponse> handleRegisterException(UserAlreadyExistsException e) {
@@ -100,6 +102,7 @@ public class AppExceptionHandler {
 
         return switch (message) {
             case "USER_NOT_FOUND" -> new ResponseEntity<>(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+            case "PASSWORD_NOT_MATCHES" -> new ResponseEntity<>(PASSWORD_NOT_MATCHES, HttpStatus.UNAUTHORIZED);
             default -> new ResponseEntity<>(BAD_REQUEST, HttpStatus.BAD_REQUEST);
         };
     }

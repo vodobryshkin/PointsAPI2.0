@@ -1,6 +1,7 @@
 package com.vdska.pointsapi2.service.spec;
 
 
+import com.vdska.pointsapi2.dto.user.LoginResponse;
 import com.vdska.pointsapi2.dto.user.RegisterRequest;
 
 /**
@@ -28,4 +29,12 @@ public interface IUserService {
      * @return почта пользователя.
      */
     String getEmail(String username);
+
+    /**
+     * Метод для входа пользователем в аккаунт.
+     *
+     * @param username имя пользователя.
+     * @param password пароль пользователя.
+     */
+    LoginResponse login(String username, String password);
 }

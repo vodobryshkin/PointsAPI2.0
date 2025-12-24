@@ -139,7 +139,7 @@ components:
           description: Описание причины неудачного завершения операции
           type: string
           enum:
-            - USERNAME_NOT_EXIST
+            - USER_NOT_FOUND
             - PASSWORD_NOT_MATCHES
       required: [ status, message ]
     # Объекты, связанные с процедурой 2FA по OneTimePassword

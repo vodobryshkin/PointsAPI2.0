@@ -24,6 +24,9 @@ public class UserServiceAspect {
     @Pointcut("execution(public * com.vdska.pointsapi2.service.spec.IUserService.getEmail(..))")
     public void getEmailPointcutMethod(){}
 
+    @Pointcut("execution(public * com.vdska.pointsapi2.service.spec.IUserService.login(..))")
+    public void loginPointcutMethod(){}
+
     @Around("registerPointcutMethod()")
     public Object logRegister(ProceedingJoinPoint pjp) throws Throwable {
         Object result;
@@ -87,6 +90,27 @@ public class UserServiceAspect {
             throw usernameNotFoundException;
         } finally {
             log.debug("Метод получения почты пользователя завершился. Время выполнения {} ms.", System.currentTimeMillis() - startTime);
+        }
+    }
+
+    @Around("loginPointcutMethod()")
+    public Object logLogin(ProceedingJoinPoint pjp) throws Throwable {
+        Object result;
+        long startTime = System.currentTimeMillis();
+
+        String username = (String) pjp.getArgs()[0];
+
+        log.debug("Началась процедура вхожа пользователя с с username='{}'.", username);
+
+        try {
+            result = pjp.proceed();
+            log.debug("Пользователь с username='{}' успешно прошёл первый этап входа.", username);
+            return result;
+        } catch (CreditsException usernameNotFoundException) {
+            log.debug("Пользователь с username='{}' не прошёл первый этап входа. Причина: {}", username, usernameNotFoundException.getMessage());
+            throw usernameNotFoundException;
+        } finally {
+            log.debug("Метод входа пользователя завершился. Время выполнения {} ms.", System.currentTimeMillis() - startTime);
         }
     }
 }

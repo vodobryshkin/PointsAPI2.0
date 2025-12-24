@@ -1,6 +1,7 @@
 package com.vdska.pointsapi2.service.impl;
 
 import com.vdska.pointsapi2.domain.jpa.User;
+import com.vdska.pointsapi2.dto.user.LoginResponse;
 import com.vdska.pointsapi2.dto.user.RegisterRequest;
 import com.vdska.pointsapi2.exception.CreditsException;
 import com.vdska.pointsapi2.exception.InvalidCreditsOfConfirmationUserException;
@@ -74,5 +75,24 @@ public class UserService implements IUserService {
         } else {
             throw new CreditsException("USER_NOT_FOUND");
         }
+    }
+
+    /**
+     * Метод для входа пользователем в аккаунт.
+     *
+     * @param username имя пользователя.
+     * @param password пароль пользователя.
+     */
+    @Override
+    public LoginResponse login(String username, String password) {
+        Optional<User> userOptional = userRepository.findUserByUsername(username);
+
+        if (userOptional.isEmpty()) {
+            throw new CreditsException("USER_NOT_FOUND");
+        }
+
+        String dbPassword = userOptional.get().getPassword();
+
+        return new LoginResponse(passwordEncoder.matches(password, dbPassword), true);
     }
 }

@@ -2,9 +2,12 @@ package com.vdska.pointsapi2.controller;
 
 import com.vdska.pointsapi2.domain.redis.ConfirmationLink;
 import com.vdska.pointsapi2.dto.confirm.VerifyResponse;
+import com.vdska.pointsapi2.dto.user.LoginRequest;
+import com.vdska.pointsapi2.dto.user.LoginResponse;
 import com.vdska.pointsapi2.dto.user.RegisterRequest;
 import com.vdska.pointsapi2.dto.mail.ConfirmAccountMailRequest;
 import com.vdska.pointsapi2.exception.ConfirmationLinkNotValidException;
+import com.vdska.pointsapi2.exception.CreditsException;
 import com.vdska.pointsapi2.service.spec.IJWTService;
 import com.vdska.pointsapi2.service.spec.IUserService;
 import com.vdska.pointsapi2.service.spec.IConfirmationLinkService;
@@ -12,15 +15,19 @@ import com.vdska.pointsapi2.service.spec.IMessageService;
 import com.vdska.pointsapi2.validaton.formats.uuid.UUID;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Контроллер, который обрабатывает запросы, приходящие на эндпойнт /auth/register
@@ -32,12 +39,7 @@ public class AuthController {
     private final IConfirmationLinkService confirmationLinkService;
     private final IMessageService messageService;
     private final IJWTService jwtService;
-
-    @Value("${auth.registration.role}")
-    private String registrationRole;
-
-    @Value("${auth.verification.role}")
-    private String verificationRole;
+    private final UserDetailsService userDetailsService;
 
     /**
      * Метод для обработки запросов на эндпойнт /auth/register
@@ -59,7 +61,25 @@ public class AuthController {
                 "Подтвердите ваш аккаунт",
                 confirmationLink.getId().toString()));
 
-        return verifyResponseWithTokens(registerRequest.getUsername(), registrationRole);
+        return verifyResponseWithTokens(registerRequest.getUsername());
+    }
+
+    /**
+     * Метод для обработки запросов на эндпойнт /auth/login
+     *
+     * @param loginRequest данные на вход в аккаунт.
+     * @return пустой ResponseEntity, так как возникшую ошибку отловит controller advice.
+     */
+    @PostMapping("/auth/login")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
+        LoginResponse loginResponse = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
+
+        if (!loginResponse.isStatus()) {
+            throw new CreditsException("PASSWORD_NOT_MATCHES");
+        }
+
+        return new ResponseEntity<>(loginResponse, HttpStatus.OK);
     }
 
     /**
@@ -79,7 +99,7 @@ public class AuthController {
 
         userService.verify(verifyResponse.getUsername());
 
-        return verifyResponseWithTokens(verifyResponse.getUsername(), verificationRole);
+        return verifyResponseWithTokens(verifyResponse.getUsername());
     }
 
     @PostMapping("auth/confirm")
@@ -102,9 +122,14 @@ public class AuthController {
                 .build();
     }
 
-    private ResponseEntity<Void> verifyResponseWithTokens(String username, String role) {
-        String accessToken = jwtService.generateAccessToken(username, role);
-        String refreshToken = jwtService.generateRefreshToken(username, role);
+    private ResponseEntity<Void> verifyResponseWithTokens(String username) {
+        UserDetails ud = userDetailsService.loadUserByUsername(username);
+        List<String> roles = ud.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
+
+        String accessToken = jwtService.generateAccessToken(username, roles);
+        String refreshToken = jwtService.generateRefreshToken(username, roles);
 
         ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken)
                 .httpOnly(true)
