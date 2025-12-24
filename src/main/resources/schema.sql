@@ -18,3 +18,7 @@ create trigger add_role_user_authority
     for each row
 call "com.vdska.pointsapi2.h2.AddRoleUserTrigger";
 
+create trigger update_role_on_verified
+    after update on users
+    for each row
+call "com.vdska.pointsapi2.h2.UpdateRoleUserTrigger";
