@@ -40,9 +40,9 @@ public class AuthController {
         confirmationLinkService.saveConfirmationLink(confirmationLink);
 
         messageService.sendConfirmAccountMessageToQueue(new ConfirmAccountMailRequest(
-                "vova",
+                registerRequest.getUsername(),
                 registerRequest.getEmail(),
-                "ok",
+                "Подтвердите ваш аккаунт",
                 confirmationLink.getId().toString()));
 
         return ResponseEntity

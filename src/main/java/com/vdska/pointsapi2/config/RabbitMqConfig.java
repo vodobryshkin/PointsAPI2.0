@@ -2,6 +2,7 @@ package com.vdska.pointsapi2.config;
 
 import lombok.Setter;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -57,5 +58,17 @@ public class RabbitMqConfig {
         RabbitTemplate rt = new RabbitTemplate(cf);
         rt.setMessageConverter(conv);
         return rt;
+    }
+
+    @Bean
+    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
+            ConnectionFactory cf,
+            JacksonJsonMessageConverter conv
+    ) {
+        SimpleRabbitListenerContainerFactory f = new SimpleRabbitListenerContainerFactory();
+        f.setConnectionFactory(cf);
+        f.setMessageConverter(conv);
+        f.setDefaultRequeueRejected(false);
+        return f;
     }
 }

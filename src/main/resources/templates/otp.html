@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Подтверждение аккаунта</title>
+    <style>
+        header, footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body {
+            font-family: sans-serif;
+        }
+
+        footer {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h2>Здравствуйте, <span th:text="${username}">username</span>!</h2>
+</header>
+
+<p>Предпринята попытка входа в ваш аккаунт:</p>
+<p>
+    <span th:text="${date}">date</span>;
+    <span th:text="${userAgent}">userAgent</span>
+</p>
+
+<p>Никому не сообщайте код для входа:</p>
+<p><b><span th:text="${otpCode}">otpCode</span></b></p>
+
+<p>Если вы не предпринимали попытку входа в аккаунт, то проигнорируйте это письмо.</p>
+<p>Это письмо отправлено автоматически, не отвечайте на него.</p>
+
+<footer>©vodobryshkin. All rights reserved.</footer>
+</body>
+</html>

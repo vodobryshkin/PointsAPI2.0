@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Подтверждение аккаунта</title>
+    <style>
+        header, footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body {
+            font-family: sans-serif;
+        }
+
+        footer {
+            font-size: 14px;
+        }
+
+    </style>
+</head>
+<body>
+<header>
+    <h2>Здравствуйте, <span th:text="${username}">username</span>!</h2>
+</header>
+Благодарю за регистрацию на моей платформе!<br>
+Для подтверждения аккаунта перейдите по ссылке:
+<a th:href="${confirmationLink}" th:text="${confirmationLink}">ссылка</a>
+
+<p>Это письмо отправлено автоматически, не отвечайте на него.</p>
+
+<footer>©vodobryshkin. All rights reserved.</footer>
+</body>
+</html>
