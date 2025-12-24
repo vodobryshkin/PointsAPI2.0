@@ -57,8 +57,8 @@ public class AppExceptionHandler {
         return new ResponseEntity<>(CONFIRMATION_LINK_NOT_VALID, HttpStatus.GONE);
     }
 
-    @ExceptionHandler(CreditsException.class)
-    public ResponseEntity<AuthErrorResponse> handleCreditsException(CreditsException e) {
+    @ExceptionHandler(InvalidCreditsOfConfirmationUserException.class)
+    public ResponseEntity<AuthErrorResponse> handleInvalidCreditsOfConfirmationUserException(InvalidCreditsOfConfirmationUserException e) {
         String message = e.getMessage();
 
         return switch (message) {
