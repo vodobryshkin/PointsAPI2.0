@@ -29,6 +29,9 @@ public class ExceptionHandlerAspect {
     @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleHandlerMethodValidationException(..))")
     public void handleHandlerMethodValidationExceptionPointcutMethod(){}
 
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleCreditsException(..))")
+    public void handleCreditsExceptionPointcutMethod(){}
+
     @AfterReturning(
             pointcut = "handleRegisterExceptionPointcutMethod()",
             returning = "response")
@@ -49,6 +52,13 @@ public class ExceptionHandlerAspect {
             pointcut = "handleConfirmationExceptionPointcutMethod()",
             returning = "response")
     public void logHandleConfirmationExceptionAfterReturning(ResponseEntity<AuthErrorResponse> response) {
-        log.info("Эндпойнт /auth/confirm вернул ответ c ошибкой: message='{}'.", response.getBody());
+        log.info("Эндпойнт на GET /auth/confirm вернул ответ c ошибкой: message='{}'.", response.getBody());
+    }
+
+    @AfterReturning(
+            pointcut = "handleCreditsExceptionPointcutMethod()",
+            returning = "response")
+    public void logHandleCreditsExceptionAfterReturning(ResponseEntity<AuthErrorResponse> response) {
+        log.info("Эндпойнт на POST /auth/confirm вернул ответ c ошибкой: message='{}'.", response.getBody());
     }
 }

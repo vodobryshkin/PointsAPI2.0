@@ -235,23 +235,11 @@ paths:
 
     post:
       summary: Запрос на отправку письма с ссылкой для подтверждения аккаунта
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SendConfirmAccountLetterRequest'
       responses:
         '204':
           description: Ok
         '404':
-          description: Почта, на которую нужно прислать письмо, не существует в системе
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SendConfirmAccountLetterErrorResponse'
-        '422':
-          description: Переданная почта невалидна
+          description: Пользователь, на почту которого нужно прислать письмо, не существует в системе
           content:
             application/json:
               schema:

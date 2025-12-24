@@ -93,4 +93,14 @@ public class AppExceptionHandler {
             default -> new ResponseEntity<>(BAD_REQUEST, HttpStatus.BAD_REQUEST);
         };
     }
+
+    @ExceptionHandler(CreditsException.class)
+    public ResponseEntity<AuthErrorResponse> handleCreditsException(CreditsException e) {
+        String message = e.getMessage();
+
+        return switch (message) {
+            case "USER_NOT_FOUND" -> new ResponseEntity<>(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+            default -> new ResponseEntity<>(BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        };
+    }
 }

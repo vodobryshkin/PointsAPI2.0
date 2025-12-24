@@ -17,6 +17,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,6 +80,26 @@ public class AuthController {
         userService.verify(verifyResponse.getUsername());
 
         return verifyResponseWithTokens(verifyResponse.getUsername(), verificationRole);
+    }
+
+    @PostMapping("auth/confirm")
+    @PreAuthorize("hasRole('UNVERIFIED_USER')")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Void> resendConfirmLetter(Authentication authentication) {
+        String email = userService.getEmail(authentication.getName());
+
+        ConfirmationLink confirmationLink = confirmationLinkService.generateConfirmationLink(authentication.getName());
+        confirmationLinkService.saveConfirmationLink(confirmationLink);
+
+        messageService.sendConfirmAccountMessageToQueue(new ConfirmAccountMailRequest(
+                authentication.getName(),
+                email,
+                "Подтвердите ваш аккаунт",
+                confirmationLink.getId().toString()));
+
+        return ResponseEntity
+                .ok()
+                .build();
     }
 
     private ResponseEntity<Void> verifyResponseWithTokens(String username, String role) {

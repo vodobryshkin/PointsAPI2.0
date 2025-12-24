@@ -20,4 +20,12 @@ public interface IUserService {
      * @param username имя пользователя для верификации.
      */
     void verify(String username);
+
+    /**
+     * Метод для получения пользователь с email.
+     *
+     * @param username имя пользователя, почту которого нужно получить.
+     * @return почта пользователя.
+     */
+    String getEmail(String username);
 }

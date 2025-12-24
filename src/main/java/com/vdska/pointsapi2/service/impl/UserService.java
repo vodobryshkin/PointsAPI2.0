@@ -2,6 +2,7 @@ package com.vdska.pointsapi2.service.impl;
 
 import com.vdska.pointsapi2.domain.jpa.User;
 import com.vdska.pointsapi2.dto.user.RegisterRequest;
+import com.vdska.pointsapi2.exception.CreditsException;
 import com.vdska.pointsapi2.exception.InvalidCreditsOfConfirmationUserException;
 import com.vdska.pointsapi2.exception.UserAlreadyExistsException;
 import com.vdska.pointsapi2.mapper.IUserMapper;
@@ -54,6 +55,24 @@ public class UserService implements IUserService {
             userRepository.save(user);
         } else {
             throw new InvalidCreditsOfConfirmationUserException("USER_NOT_FOUND");
+        }
+    }
+
+    /**
+     * Метод для получения пользователь с email.
+     *
+     * @param username имя пользователя, почту которого нужно получить.
+     * @return почта пользователя.
+     */
+    @Override
+    public String getEmail(String username) {
+        Optional<User> userOptional = userRepository.findUserByUsername(username);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            return user.getEmail();
+        } else {
+            throw new CreditsException("USER_NOT_FOUND");
         }
     }
 }

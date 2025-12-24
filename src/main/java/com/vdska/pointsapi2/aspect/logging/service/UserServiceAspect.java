@@ -1,6 +1,7 @@
 package com.vdska.pointsapi2.aspect.logging.service;
 
 import com.vdska.pointsapi2.dto.user.RegisterRequest;
+import com.vdska.pointsapi2.exception.CreditsException;
 import com.vdska.pointsapi2.exception.InvalidCreditsOfConfirmationUserException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -19,6 +20,9 @@ public class UserServiceAspect {
 
     @Pointcut("execution(public * com.vdska.pointsapi2.service.spec.IUserService.verify(..))")
     public void verifyPointcutMethod(){}
+
+    @Pointcut("execution(public * com.vdska.pointsapi2.service.spec.IUserService.getEmail(..))")
+    public void getEmailPointcutMethod(){}
 
     @Around("registerPointcutMethod()")
     public Object logRegister(ProceedingJoinPoint pjp) throws Throwable {
@@ -62,6 +66,27 @@ public class UserServiceAspect {
             throw usernameNotFoundException;
         } finally {
             log.debug("Метод подтверждения аккаунта пользователя завершился. Время выполнения {} ms.", System.currentTimeMillis() - startTime);
+        }
+    }
+
+    @Around("getEmailPointcutMethod()")
+    public Object logGetEmail(ProceedingJoinPoint pjp) throws Throwable {
+        Object result;
+        long startTime = System.currentTimeMillis();
+
+        String username = (String) pjp.getArgs()[0];
+
+        log.debug("Началось получение почты пользователя с с username='{}'.", username);
+
+        try {
+            result = pjp.proceed();
+            log.debug("Почта пользователя с username='{}' была успешна получена: {}.", username, result);
+            return result;
+        } catch (CreditsException usernameNotFoundException) {
+            log.debug("Получение почты пользователя с username='{}' завершилось неудачно. Пользователя с таким username не существует.", username);
+            throw usernameNotFoundException;
+        } finally {
+            log.debug("Метод получения почты пользователя завершился. Время выполнения {} ms.", System.currentTimeMillis() - startTime);
         }
     }
 }
