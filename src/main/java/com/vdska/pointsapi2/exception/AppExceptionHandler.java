@@ -35,6 +35,8 @@ public class AppExceptionHandler {
             new AuthErrorResponse(false, "PASSWORD_NOT_MATCHES", null);
     private static final AuthErrorResponse OTP_NOT_VALID =
             new AuthErrorResponse(false, "OTP_NOT_VALID", null);
+    private static final AuthErrorResponse CHID_NOT_VALID =
+            new AuthErrorResponse(false, "CHID_NOT_VALID", null);
 
 
     @ExceptionHandler(UserAlreadyExistsException.class)
@@ -83,13 +85,13 @@ public class AppExceptionHandler {
     }
 
     @ExceptionHandler(VerifyException.class)
-    public ResponseEntity<AuthErrorResponse> handleConfirmationException(VerifyException e) {
-        return new ResponseEntity<>(CONFIRMATION_LINK_NOT_VALID, HttpStatus.GONE);
-    }
-
-    @ExceptionHandler(OTPLinkNotValidException.class)
-    public ResponseEntity<AuthErrorResponse> handleOTPException(OTPLinkNotValidException e) {
-        return new ResponseEntity<>(OTP_NOT_VALID, HttpStatus.GONE);
+    public ResponseEntity<AuthErrorResponse> handleVerifyException(VerifyException e) {
+        return switch (e.getMessage()) {
+            case "OTP_NOT_VALID" -> new ResponseEntity<>(OTP_NOT_VALID, HttpStatus.GONE);
+            case "CHID_NOT_VALID" -> new ResponseEntity<>(CHID_NOT_VALID, HttpStatus.GONE);
+            case "LINK_NOT_VALID" -> new ResponseEntity<>(CONFIRMATION_LINK_NOT_VALID, HttpStatus.NOT_FOUND);
+            default -> new ResponseEntity<>(BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        };
     }
 
     @ExceptionHandler(InvalidCreditsOfConfirmationUserException.class)

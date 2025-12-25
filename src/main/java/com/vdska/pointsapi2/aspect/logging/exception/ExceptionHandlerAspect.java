@@ -20,8 +20,8 @@ public class ExceptionHandlerAspect {
     @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleValidationException(..))")
     public void handleValidationExceptionPointcutMethod(){}
 
-    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleConfirmationException(..))")
-    public void handleConfirmationExceptionPointcutMethod(){}
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleVerifyException(..))")
+    public void handleVerifyExceptionPointcutMethod(){}
 
     @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleInvalidCreditsOfConfirmationUserException(..))")
     public void handleInvalidCreditsOfConfirmationUserExceptionPointcutMethod(){}
@@ -49,10 +49,13 @@ public class ExceptionHandlerAspect {
     }
 
     @AfterReturning(
-            pointcut = "handleConfirmationExceptionPointcutMethod()",
+            pointcut = "handleVerifyExceptionPointcutMethod()",
             returning = "response")
     public void logHandleConfirmationExceptionAfterReturning(ResponseEntity<AuthErrorResponse> response) {
-        log.info("Эндпойнт на GET /auth/confirm вернул ответ c ошибкой: message='{}'.", response.getBody());
+        switch (Objects.requireNonNull(response.getBody()).getMessage()) {
+            case "OTP_NOT_VALID", "CHID_NOT_VALID" -> log.info("Эндпойнт на POST /auth/otp вернул ответ c ошибкой: message='{}'.", response.getBody());
+            default -> log.info("Эндпойнт на GET /auth/confirm вернул ответ c ошибкой: message='{}'.", response.getBody());
+        }
     }
 
     @AfterReturning(

@@ -11,10 +11,10 @@ import com.vdska.pointsapi2.dto.user.RegisterRequest;
 import com.vdska.pointsapi2.dto.mail.ConfirmAccountMailRequest;
 import com.vdska.pointsapi2.exception.VerifyException;
 import com.vdska.pointsapi2.exception.CreditsException;
-import com.vdska.pointsapi2.exception.OTPLinkNotValidException;
 import com.vdska.pointsapi2.service.spec.*;
 import com.vdska.pointsapi2.validaton.formats.uuid.UUID;
 import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -110,7 +110,7 @@ public class AuthController {
         VerifyResponse verifyResponse = oneTimePasswordService.verifyOTP(otpRequest);
 
         if (!verifyResponse.isStatus()) {
-            throw new OTPLinkNotValidException("OTP_NOT_VALID");
+            throw new ValidationException("OTP_NOT_VALID");
         }
 
         return verifyResponseWithTokens(verifyResponse.getMessage());
@@ -128,7 +128,7 @@ public class AuthController {
         VerifyResponse verifyResponse = confirmationLinkService.verifyConfirmationLink(id);
 
         if (!verifyResponse.isStatus()) {
-            throw new VerifyException("CONFIRMATION_LINK_NOT_VALID");
+            throw new VerifyException("LINK_NOT_VALID");
         }
 
         userService.verify(verifyResponse.getMessage());
