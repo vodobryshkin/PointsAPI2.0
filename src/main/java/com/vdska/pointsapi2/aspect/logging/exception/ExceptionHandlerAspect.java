@@ -14,22 +14,22 @@ import java.util.Objects;
 @Component
 @Slf4j
 public class ExceptionHandlerAspect {
-    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleRegisterException(..))")
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.auth.AppExceptionHandler.handleRegisterException(..))")
     public void handleRegisterExceptionPointcutMethod(){}
 
-    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleValidationException(..))")
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.auth.AppExceptionHandler.handleValidationException(..))")
     public void handleValidationExceptionPointcutMethod(){}
 
-    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleVerifyException(..))")
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.auth.AppExceptionHandler.handleVerifyException(..))")
     public void handleVerifyExceptionPointcutMethod(){}
 
-    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleInvalidCreditsOfConfirmationUserException(..))")
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.auth.AppExceptionHandler.handleInvalidCreditsOfConfirmationUserException(..))")
     public void handleInvalidCreditsOfConfirmationUserExceptionPointcutMethod(){}
 
-    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleHandlerMethodValidationException(..))")
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.auth.AppExceptionHandler.handleHandlerMethodValidationException(..))")
     public void handleHandlerMethodValidationExceptionPointcutMethod(){}
 
-    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleCreditsException(..))")
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.auth.AppExceptionHandler.handleCreditsException(..))")
     public void handleCreditsExceptionPointcutMethod(){}
 
     @AfterReturning(

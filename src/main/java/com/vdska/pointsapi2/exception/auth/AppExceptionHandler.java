@@ -1,4 +1,4 @@
-package com.vdska.pointsapi2.exception;
+package com.vdska.pointsapi2.exception.auth;
 
 import com.vdska.pointsapi2.dto.user.AuthErrorResponse;
 import lombok.extern.slf4j.Slf4j;

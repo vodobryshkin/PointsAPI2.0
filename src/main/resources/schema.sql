@@ -13,6 +13,16 @@ create table authorities (
                              authority varchar(50)
 );
 
+create table hits (
+                      id uuid primary key,
+                      user_id uuid not null references users(id),
+                      x numeric(38, 2) not null,
+                      y numeric(38, 2) not null,
+                      r numeric(38, 2) not null,
+                      status bool not null,
+                      date_of_creation timestamp not null
+);
+
 insert into users values (uuid '000aed89-3083-4b86-a3cb-6e0a11dd4348',
                           'dobryak',
                           'vovadobryshkin@gmail.com',
@@ -22,7 +32,11 @@ insert into users values (uuid '000aed89-3083-4b86-a3cb-6e0a11dd4348',
 
 insert into authorities values ( uuid 'a33acb27-f5bf-407b-87f9-cbd450e903cb',
                                 'dobryak',
-                                'ADMIN');
+                                'ROLE_ADMIN');
+
+insert into authorities values ( uuid '000aed89-3083-4b86-a3cb-6e0a11dd4348',
+                                 'dobryak',
+                                 'ROLE_USER');
 
 create trigger add_role_user_authority
     after insert on users

@@ -1,0 +1,16 @@
+{
+  "areas": [
+    {
+      "type": "formula",
+      "value": "x^2+y^2<=r^2/4 && x>=0 && y>=0"
+    },
+    {
+      "type": "formula",
+      "value": "x+y>=-r/2 && x<=0 && y<=0"
+    },
+    {
+      "type": "formula",
+      "value": "x>=-r/2 && x<=0 && y>=0 && y<=r"
+    }
+  ]
+}
