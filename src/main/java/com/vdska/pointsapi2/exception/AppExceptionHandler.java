@@ -1,6 +1,7 @@
 package com.vdska.pointsapi2.exception;
 
 import com.vdska.pointsapi2.dto.user.AuthErrorResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 /**
  * Обработчик ошибок, возникших за время работы программы
  */
+@Slf4j
 @RestControllerAdvice
 public class AppExceptionHandler {
     private static final AuthErrorResponse USERNAME_TAKEN =
@@ -35,8 +37,8 @@ public class AppExceptionHandler {
             new AuthErrorResponse(false, "PASSWORD_NOT_MATCHES", null);
     private static final AuthErrorResponse OTP_NOT_VALID =
             new AuthErrorResponse(false, "OTP_NOT_VALID", null);
-    private static final AuthErrorResponse CHID_NOT_VALID =
-            new AuthErrorResponse(false, "CHID_NOT_VALID", null);
+    private static final AuthErrorResponse CHALLENGE_ID_NOT_VALID =
+            new AuthErrorResponse(false, "CHALLENGE_ID_NOT_VALID", null);
 
 
     @ExceptionHandler(UserAlreadyExistsException.class)
@@ -86,9 +88,10 @@ public class AppExceptionHandler {
 
     @ExceptionHandler(VerifyException.class)
     public ResponseEntity<AuthErrorResponse> handleVerifyException(VerifyException e) {
+        log.info(e.getMessage());
         return switch (e.getMessage()) {
             case "OTP_NOT_VALID" -> new ResponseEntity<>(OTP_NOT_VALID, HttpStatus.GONE);
-            case "CHID_NOT_VALID" -> new ResponseEntity<>(CHID_NOT_VALID, HttpStatus.GONE);
+            case "CHALLENGE_ID_NOT_VALID" -> new ResponseEntity<>(CHALLENGE_ID_NOT_VALID, HttpStatus.GONE);
             case "LINK_NOT_VALID" -> new ResponseEntity<>(CONFIRMATION_LINK_NOT_VALID, HttpStatus.NOT_FOUND);
             default -> new ResponseEntity<>(BAD_REQUEST, HttpStatus.BAD_REQUEST);
         };

@@ -14,7 +14,6 @@ import com.vdska.pointsapi2.exception.CreditsException;
 import com.vdska.pointsapi2.service.spec.*;
 import com.vdska.pointsapi2.validaton.formats.uuid.UUID;
 import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -110,7 +109,7 @@ public class AuthController {
         VerifyResponse verifyResponse = oneTimePasswordService.verifyOTP(otpRequest);
 
         if (!verifyResponse.isStatus()) {
-            throw new ValidationException("OTP_NOT_VALID");
+            throw new VerifyException(verifyResponse.getMessage());
         }
 
         return verifyResponseWithTokens(verifyResponse.getMessage());

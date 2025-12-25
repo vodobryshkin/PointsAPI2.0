@@ -2,6 +2,7 @@ package com.vdska.pointsapi2.domain.redis;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @RedisHash("ConfirmationLink")
+@ToString
 public class ConfirmationLink implements Serializable {
     @Id
     private UUID id;

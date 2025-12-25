@@ -2,6 +2,7 @@ package com.vdska.pointsapi2.domain.redis;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
@@ -14,6 +15,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @RedisHash("OneTimePassword")
+@ToString
 public class OneTimePassword implements Serializable {
     @Id
     private String code;

@@ -52,7 +52,7 @@ public class ChallengeIdService implements IChallengeIdService {
      */
     @Override
     public ChallengeId generateChallengeId(String username, String challengeID) {
-        return new ChallengeId(challengeID, username, ttl);
+        return new ChallengeId(username, challengeID, ttl);
     }
 
     /**
