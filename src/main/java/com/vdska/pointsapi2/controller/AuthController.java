@@ -34,6 +34,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/auth")
 public class AuthController {
     private final IUserService userService;
     private final IConfirmationLinkService confirmationLinkService;
@@ -48,7 +49,7 @@ public class AuthController {
      * @param registerRequest данные на регистрацию аккаунта.
      * @return пустой ResponseEntity, так как возникшую ошибку отловит controller advice.
      */
-    @PostMapping("/auth/register")
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> register(@RequestBody @Valid RegisterRequest registerRequest) {
         userService.register(registerRequest);
@@ -71,7 +72,7 @@ public class AuthController {
      * @param loginRequest данные на вход в аккаунт.
      * @return пустой ResponseEntity, так как возникшую ошибку отловит controller advice.
      */
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest,
                                                @RequestHeader(value = "User-Agent", required = false) String userAgent,
@@ -103,7 +104,7 @@ public class AuthController {
      *
      * @param otpRequest запрос с отправленным otp-кодом
      */
-    @PostMapping("/auth/otp")
+    @PostMapping("/otp")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> otp(@RequestBody @Valid OTPRequest otpRequest) {
         VerifyResponse verifyResponse = oneTimePasswordService.verifyOTP(otpRequest);
@@ -121,7 +122,7 @@ public class AuthController {
      * @return пустой ResponseEntity, так как возникшую ошибку отловит controller advice.
      */
     @Validated
-    @GetMapping("/auth/confirm")
+    @GetMapping("/confirm")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> confirm(@RequestParam(name = "id") @UUID String id) {
         VerifyResponse verifyResponse = confirmationLinkService.verifyConfirmationLink(id);
@@ -135,7 +136,7 @@ public class AuthController {
         return verifyResponseWithTokens(verifyResponse.getMessage());
     }
 
-    @PostMapping("auth/confirm")
+    @PostMapping("/confirm")
     @PreAuthorize("hasRole('UNVERIFIED_USER')")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> resendConfirmLetter(Authentication authentication) {
@@ -155,7 +156,7 @@ public class AuthController {
                 .build();
     }
 
-    @GetMapping("auth/refresh")
+    @GetMapping("/refresh")
     public ResponseEntity<Void> refresh(@CookieValue(name = "refresh_token") String refreshToken) {
         if (jwtService.isTokenValid(refreshToken)) {
             String username = jwtService.extractUsername(refreshToken);

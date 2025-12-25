@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface OTP {
-    String message() default "Username must be 6 symbols and contain only numbers";
+    String message() default "OTP must be 6 symbols and contain only numbers";
 
     Class<?>[] groups() default {};
 
