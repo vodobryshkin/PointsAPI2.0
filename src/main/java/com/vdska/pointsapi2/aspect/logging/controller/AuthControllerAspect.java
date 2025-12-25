@@ -27,6 +27,9 @@ public class AuthControllerAspect {
     @Pointcut("execution(public * com.vdska.pointsapi2.controller.AuthController.otp(..))")
     public void otpPointcutMethod(){}
 
+    @Pointcut("execution(public * com.vdska.pointsapi2.controller.AuthController.refresh(..))")
+    public void refreshPointcutMethod(){}
+
     @Around("registerPointcutMethod()")
     public Object logAroundRegister(ProceedingJoinPoint pjp) throws Throwable {
         Object result;
@@ -89,6 +92,19 @@ public class AuthControllerAspect {
         result = pjp.proceed();
 
         log.info("Эндпойнт /auth/otp c параметрами otp_code='{}' challenge_id='{}' успешно вернул ответ.", otpRequest.getCode(), otpRequest.getChallengeId());
+        return result;
+    }
+
+    @Around("refreshPointcutMethod()")
+    public Object logAroundRefresh(ProceedingJoinPoint pjp) throws Throwable {
+        Object result;
+        String refreshToken = ((String) pjp.getArgs()[0]);
+
+        log.debug("Запрос на эндпойнт /auth/refresh: refresh_token='{}'.", refreshToken);
+
+        result = pjp.proceed();
+
+        log.debug("Эндпойнт /auth/refresh c параметрами refresh_token='{}' вернул ответ: {}.", refreshToken, result);
         return result;
     }
 }
