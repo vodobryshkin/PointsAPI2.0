@@ -8,5 +8,5 @@ import lombok.Value;
 @Value
 public class VerifyResponse {
     boolean status;
-    String username;
+    String message;
 }

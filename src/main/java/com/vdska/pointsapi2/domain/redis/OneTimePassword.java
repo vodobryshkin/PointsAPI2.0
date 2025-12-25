@@ -20,12 +20,15 @@ public class OneTimePassword implements Serializable {
 
     private String username;
 
+    private String challengeId;
+
     @TimeToLive
     private Long ttlSeconds;
 
-    public OneTimePassword(String code, String username, Long ttlSeconds) {
+    public OneTimePassword(String code, String username, String challengeId, Long ttlSeconds) {
         this.code = code;
         this.username = username;
+        this.challengeId = challengeId;
         this.ttlSeconds = ttlSeconds;
     }
 }

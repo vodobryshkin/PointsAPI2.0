@@ -1,6 +1,8 @@
 package com.vdska.pointsapi2.service.impl;
 
+import com.vdska.pointsapi2.domain.redis.ChallengeId;
 import com.vdska.pointsapi2.domain.redis.OneTimePassword;
+import com.vdska.pointsapi2.dto.token.OTPRequest;
 import com.vdska.pointsapi2.dto.token.VerifyResponse;
 import com.vdska.pointsapi2.repository.IOneTimePasswordRepository;
 import com.vdska.pointsapi2.service.components.OTPGenerator;
@@ -19,25 +21,33 @@ public class OneTimePasswordService implements IOneTimePasswordService {
 
     private final IOneTimePasswordRepository oneTimePasswordRepository;
     private final OTPGenerator otpGenerator;
-    private static final VerifyResponse INVALID_TOKEN = new VerifyResponse(false, null);
+    private final ChallengeIdService challengeIdService;
+    private static final VerifyResponse INVALID_TOKEN = new VerifyResponse(false, "OTP_NOT_VALID");
 
     /**
      * Метод для подтверждения корректности OTP.
      *
-     * @param code код.
+     * @param otpRequest запрос на подтверждение.
      */
     @Override
-    public VerifyResponse verifyOTP(String code) {
-        Optional<OneTimePassword> confirmationLinkOptional = oneTimePasswordRepository.findById(code);
+    public VerifyResponse verifyOTP(OTPRequest otpRequest)
+    {
+        Optional<OneTimePassword> oneTimePassword = oneTimePasswordRepository.findById(otpRequest.getCode());
 
-        if (confirmationLinkOptional.isPresent()) {
-            String username = confirmationLinkOptional.get().getUsername();
-            oneTimePasswordRepository.deleteById(code);
+        if (oneTimePassword.isEmpty()) {
+            return INVALID_TOKEN;
+        }
+
+        String username = oneTimePassword.get().getUsername();
+        VerifyResponse verifyResponse = challengeIdService.verifyChallengeId(username, otpRequest.getChallengeId());
+
+        if (verifyResponse.isStatus()) {
+            oneTimePasswordRepository.deleteById(otpRequest.getCode());
 
             return new VerifyResponse(true, username);
         }
 
-        return INVALID_TOKEN;
+        return verifyResponse;
     }
 
     /**
@@ -47,10 +57,13 @@ public class OneTimePasswordService implements IOneTimePasswordService {
      * @return сгенерированный OTP.
      */
     @Override
-    public OneTimePassword generateOTP(String username) {
+    public OneTimePassword generateOTP(String username, String challengeID) {
         String code = otpGenerator.generateCode();
 
-        return new OneTimePassword(code, username, ttl);
+        ChallengeId challengeId = challengeIdService.generateChallengeId(username, challengeID);
+        challengeIdService.saveChallengeId(challengeId);
+
+        return new OneTimePassword(code, username, challengeId.getId(), ttl);
     }
 
     /**

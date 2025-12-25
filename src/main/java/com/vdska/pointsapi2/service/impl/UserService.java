@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Сервис для работы с логикой процесса входа в приложение
@@ -93,6 +94,6 @@ public class UserService implements IUserService {
 
         String dbPassword = userOptional.get().getPassword();
 
-        return new LoginResponse(passwordEncoder.matches(password, dbPassword), true);
+        return new LoginResponse(passwordEncoder.matches(password, dbPassword), true, UUID.randomUUID().toString());
     }
 }

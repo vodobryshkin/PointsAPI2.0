@@ -3,13 +3,15 @@ package com.vdska.pointsapi2.controller;
 import com.vdska.pointsapi2.domain.redis.ConfirmationLink;
 import com.vdska.pointsapi2.domain.redis.OneTimePassword;
 import com.vdska.pointsapi2.dto.mail.OTPMailRequest;
+import com.vdska.pointsapi2.dto.token.OTPRequest;
 import com.vdska.pointsapi2.dto.token.VerifyResponse;
 import com.vdska.pointsapi2.dto.user.LoginRequest;
 import com.vdska.pointsapi2.dto.user.LoginResponse;
 import com.vdska.pointsapi2.dto.user.RegisterRequest;
 import com.vdska.pointsapi2.dto.mail.ConfirmAccountMailRequest;
-import com.vdska.pointsapi2.exception.ConfirmationLinkNotValidException;
+import com.vdska.pointsapi2.exception.VerifyException;
 import com.vdska.pointsapi2.exception.CreditsException;
+import com.vdska.pointsapi2.exception.OTPLinkNotValidException;
 import com.vdska.pointsapi2.service.spec.*;
 import com.vdska.pointsapi2.validaton.formats.uuid.UUID;
 import jakarta.validation.Valid;
@@ -81,7 +83,7 @@ public class AuthController {
             throw new CreditsException("PASSWORD_NOT_MATCHES");
         }
 
-        OneTimePassword oneTimePassword = oneTimePasswordService.generateOTP(loginRequest.getUsername());
+        OneTimePassword oneTimePassword = oneTimePasswordService.generateOTP(loginRequest.getUsername(), loginResponse.getChallengeId());
         oneTimePasswordService.saveOTP(oneTimePassword);
 
         String email = userService.getEmail(loginRequest.getUsername());
@@ -98,6 +100,23 @@ public class AuthController {
     }
 
     /**
+     * Метод для обработки POST-запроса на эндпойнт /auth/otp
+     *
+     * @param otpRequest запрос с отправленным otp-кодом
+     */
+    @PostMapping("/auth/otp")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> otp(@RequestBody @Valid OTPRequest otpRequest) {
+        VerifyResponse verifyResponse = oneTimePasswordService.verifyOTP(otpRequest);
+
+        if (!verifyResponse.isStatus()) {
+            throw new OTPLinkNotValidException("OTP_NOT_VALID");
+        }
+
+        return verifyResponseWithTokens(verifyResponse.getMessage());
+    }
+
+    /**
      * Метод для обработки GET-запросов на эндпойнт /auth/confirm
      *
      * @return пустой ResponseEntity, так как возникшую ошибку отловит controller advice.
@@ -109,12 +128,12 @@ public class AuthController {
         VerifyResponse verifyResponse = confirmationLinkService.verifyConfirmationLink(id);
 
         if (!verifyResponse.isStatus()) {
-            throw new ConfirmationLinkNotValidException("CONFIRMATION_LINK_NOT_VALID");
+            throw new VerifyException("CONFIRMATION_LINK_NOT_VALID");
         }
 
-        userService.verify(verifyResponse.getUsername());
+        userService.verify(verifyResponse.getMessage());
 
-        return verifyResponseWithTokens(verifyResponse.getUsername());
+        return verifyResponseWithTokens(verifyResponse.getMessage());
     }
 
     @PostMapping("auth/confirm")

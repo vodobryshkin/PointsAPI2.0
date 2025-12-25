@@ -147,25 +147,11 @@ components:
       description: Объект, содержащий данные необходимые для входа в аккаунт по OneTimePassword
       type: object
       properties:
-        username:
-          description: Имя пользователя, который хочет войти в аккаунт
-          type: string
-          example: vodobryshkin
         otpCode:
           description: Шестизначный OneTimePassword-код на подтверждение
           type: number
           example: 123456
-      required: [ username, otpCode ]
-    OTPResponse:
-      description: Объект, содержащий данные сформированные сервером после обработки попытки входа по OneTimePassword
-      type: object
-      properties:
-        status:
-          description: Статус действия по OneTimePassword
-          type: boolean
-          enum:
-            - true
-      required: [ status ]
+      required: [ otpCode ]
     OTPErrorResponse:
       description: Объект, содержащий данные сформированные сервером после неудачной обработки попытки входа по OneTimePassword
       type: object
@@ -180,7 +166,7 @@ components:
           type: string
           enum:
             - OTP_NOT_VALID
-            - OTP_EXPIRED
+            - VALIDATION_ERROR
       required: [ status, message ]
 
 paths:

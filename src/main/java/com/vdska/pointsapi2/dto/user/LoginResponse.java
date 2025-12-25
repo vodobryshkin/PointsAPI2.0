@@ -8,4 +8,7 @@ public class LoginResponse {
     boolean status;
     @JsonProperty("otp_required")
     boolean otpRequired;
+
+    @JsonProperty("challenge_id")
+    String challengeId;
 }

@@ -36,7 +36,7 @@ public class ConfirmationLinkAspectServiceAspect {
             VerifyResponse verifyResponse = (VerifyResponse) result;
 
             if (verifyResponse.isStatus()) {
-                log.debug("Ссылка с id='{}' была верифицирована как корректная. Пользователь: {}.", id, verifyResponse.getUsername());
+                log.debug("Ссылка с id='{}' была верифицирована как корректная. Пользователь: {}.", id, verifyResponse.getMessage());
             } else {
                 log.debug("Ссылка с id='{}' не прошла верификацию.", id);
             }

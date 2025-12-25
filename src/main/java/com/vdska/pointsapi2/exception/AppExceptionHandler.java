@@ -33,7 +33,10 @@ public class AppExceptionHandler {
             new AuthErrorResponse(false, "USER_NOT_FOUND", null);
     private static final AuthErrorResponse PASSWORD_NOT_MATCHES =
             new AuthErrorResponse(false, "PASSWORD_NOT_MATCHES", null);
-    
+    private static final AuthErrorResponse OTP_NOT_VALID =
+            new AuthErrorResponse(false, "OTP_NOT_VALID", null);
+
+
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<AuthErrorResponse> handleRegisterException(UserAlreadyExistsException e) {
         String message = e.getMessage();
@@ -79,21 +82,25 @@ public class AppExceptionHandler {
                 HttpStatus.UNPROCESSABLE_CONTENT);
     }
 
-
-
-    @ExceptionHandler(ConfirmationLinkNotValidException.class)
-    public ResponseEntity<AuthErrorResponse> handleConfirmationException(ConfirmationLinkNotValidException e) {
+    @ExceptionHandler(VerifyException.class)
+    public ResponseEntity<AuthErrorResponse> handleConfirmationException(VerifyException e) {
         return new ResponseEntity<>(CONFIRMATION_LINK_NOT_VALID, HttpStatus.GONE);
+    }
+
+    @ExceptionHandler(OTPLinkNotValidException.class)
+    public ResponseEntity<AuthErrorResponse> handleOTPException(OTPLinkNotValidException e) {
+        return new ResponseEntity<>(OTP_NOT_VALID, HttpStatus.GONE);
     }
 
     @ExceptionHandler(InvalidCreditsOfConfirmationUserException.class)
     public ResponseEntity<AuthErrorResponse> handleInvalidCreditsOfConfirmationUserException(InvalidCreditsOfConfirmationUserException e) {
         String message = e.getMessage();
 
-        return switch (message) {
-            case "USER_NOT_FOUND" -> new ResponseEntity<>(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
-            default -> new ResponseEntity<>(BAD_REQUEST, HttpStatus.BAD_REQUEST);
-        };
+        if (message.equals("USER_NOT_FOUND")) {
+            return new ResponseEntity<>(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(BAD_REQUEST, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @ExceptionHandler(CreditsException.class)
