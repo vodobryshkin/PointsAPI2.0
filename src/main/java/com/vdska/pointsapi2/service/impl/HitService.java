@@ -1,6 +1,6 @@
 package com.vdska.pointsapi2.service.impl;
 
-import checkhit.service.ICheckoutHitService;
+import checkhit.service.ACheckoutHitService;
 import com.vdska.pointsapi2.domain.jpa.Hit;
 import com.vdska.pointsapi2.domain.jpa.User;
 import com.vdska.pointsapi2.dto.hit.AddHitRequest;
@@ -29,7 +29,7 @@ public class HitService implements IHitService {
     private final IUserRepository userRepository;
     private final IHitRepository hitRepository;
     private final IHitMapper hitMapper;
-    private final ICheckoutHitService checkoutHitService;
+    private final ACheckoutHitService checkoutHitService;
 
     /**
      * Метод сервиса для добавления точки.
