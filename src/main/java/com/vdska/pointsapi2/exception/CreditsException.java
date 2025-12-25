@@ -1,4 +1,4 @@
-package com.vdska.pointsapi2.exception.auth;
+package com.vdska.pointsapi2.exception;
 
 public class CreditsException extends RuntimeException {
     public CreditsException(String message) {

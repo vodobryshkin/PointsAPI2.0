@@ -1,4 +1,4 @@
-package com.vdska.pointsapi2.exception.auth;
+package com.vdska.pointsapi2.exception;
 
 public class VerifyException extends RuntimeException {
     public VerifyException(String message) {

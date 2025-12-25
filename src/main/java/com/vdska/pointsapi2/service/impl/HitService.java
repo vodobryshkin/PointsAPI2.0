@@ -6,7 +6,7 @@ import com.vdska.pointsapi2.domain.jpa.User;
 import com.vdska.pointsapi2.dto.hit.AddHitRequest;
 import com.vdska.pointsapi2.dto.hit.AddHitResponse;
 import com.vdska.pointsapi2.dto.hit.GetHitsPageResponse;
-import com.vdska.pointsapi2.exception.auth.CreditsException;
+import com.vdska.pointsapi2.exception.CreditsException;
 import com.vdska.pointsapi2.mapper.IHitMapper;
 import com.vdska.pointsapi2.repository.IHitRepository;
 import com.vdska.pointsapi2.repository.IUserRepository;

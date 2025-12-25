@@ -14,23 +14,36 @@ import java.util.Objects;
 @Component
 @Slf4j
 public class ExceptionHandlerAspect {
-    @Pointcut("execution(public * com.vdska.pointsapi2.exception.auth.AppExceptionHandler.handleRegisterException(..))")
+
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleRegisterException(..))")
     public void handleRegisterExceptionPointcutMethod(){}
 
-    @Pointcut("execution(public * com.vdska.pointsapi2.exception.auth.AppExceptionHandler.handleValidationException(..))")
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleValidationException(..))")
     public void handleValidationExceptionPointcutMethod(){}
 
-    @Pointcut("execution(public * com.vdska.pointsapi2.exception.auth.AppExceptionHandler.handleVerifyException(..))")
-    public void handleVerifyExceptionPointcutMethod(){}
-
-    @Pointcut("execution(public * com.vdska.pointsapi2.exception.auth.AppExceptionHandler.handleInvalidCreditsOfConfirmationUserException(..))")
-    public void handleInvalidCreditsOfConfirmationUserExceptionPointcutMethod(){}
-
-    @Pointcut("execution(public * com.vdska.pointsapi2.exception.auth.AppExceptionHandler.handleHandlerMethodValidationException(..))")
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleHandlerMethodValidationException(..))")
     public void handleHandlerMethodValidationExceptionPointcutMethod(){}
 
-    @Pointcut("execution(public * com.vdska.pointsapi2.exception.auth.AppExceptionHandler.handleCreditsException(..))")
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleVerifyException(..))")
+    public void handleVerifyExceptionPointcutMethod(){}
+
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleInvalidCreditsOfConfirmationUserException(..))")
+    public void handleInvalidCreditsOfConfirmationUserExceptionPointcutMethod(){}
+
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleCreditsException(..))")
     public void handleCreditsExceptionPointcutMethod(){}
+
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleBadJson(..))")
+    public void handleBadJsonPointcutMethod(){}
+
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleIllegalArgument(..))")
+    public void handleIllegalArgumentPointcutMethod(){}
+
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleRuntime(..))")
+    public void handleRuntimePointcutMethod(){}
+
+    @Pointcut("execution(public * com.vdska.pointsapi2.exception.AppExceptionHandler.handleOther(..))")
+    public void handleOtherPointcutMethod(){}
 
     @AfterReturning(
             pointcut = "handleRegisterExceptionPointcutMethod()",
@@ -51,17 +64,53 @@ public class ExceptionHandlerAspect {
     @AfterReturning(
             pointcut = "handleVerifyExceptionPointcutMethod()",
             returning = "response")
-    public void logHandleConfirmationExceptionAfterReturning(ResponseEntity<AuthErrorResponse> response) {
-        switch (Objects.requireNonNull(response.getBody()).getMessage()) {
-            case "OTP_NOT_VALID", "CHID_NOT_VALID" -> log.info("Эндпойнт на POST /auth/otp вернул ответ c ошибкой: message='{}'.", response.getBody());
-            default -> log.info("Эндпойнт на GET /auth/confirm вернул ответ c ошибкой: message='{}'.", response.getBody());
+    public void logHandleVerifyExceptionAfterReturning(ResponseEntity<AuthErrorResponse> response) {
+        String msg = Objects.requireNonNull(response.getBody()).getMessage();
+        switch (msg) {
+            case "OTP_NOT_VALID", "CHALLENGE_ID_NOT_VALID" -> log.info("Эндпойнт POST /auth/otp вернул ответ c ошибкой: body='{}'.", response.getBody());
+            default -> log.info("Эндпойнт GET /auth/confirm вернул ответ c ошибкой: body='{}'.", response.getBody());
         }
+    }
+
+    @AfterReturning(
+            pointcut = "handleInvalidCreditsOfConfirmationUserExceptionPointcutMethod()",
+            returning = "response")
+    public void logHandleInvalidCreditsOfConfirmationUserExceptionAfterReturning(ResponseEntity<AuthErrorResponse> response) {
+        log.info("Ошибка подтверждения/учётных данных: body='{}'.", response.getBody());
     }
 
     @AfterReturning(
             pointcut = "handleCreditsExceptionPointcutMethod()",
             returning = "response")
     public void logHandleCreditsExceptionAfterReturning(ResponseEntity<AuthErrorResponse> response) {
-        log.info("Эндпойнт на POST /auth/confirm вернул ответ c ошибкой: message='{}'.", response.getBody());
+        log.info("Ошибка учётных данных: body='{}'.", response.getBody());
+    }
+
+    @AfterReturning(
+            pointcut = "handleBadJsonPointcutMethod()",
+            returning = "response")
+    public void logHandleBadJsonAfterReturning(ResponseEntity<AuthErrorResponse> response) {
+        log.debug("Некорректный JSON в запросе: body='{}'.", response.getBody());
+    }
+
+    @AfterReturning(
+            pointcut = "handleIllegalArgumentPointcutMethod()",
+            returning = "response")
+    public void logHandleIllegalArgumentAfterReturning(ResponseEntity<AuthErrorResponse> response) {
+        log.debug("Некорректный запрос: body='{}'.", response.getBody());
+    }
+
+    @AfterReturning(
+            pointcut = "handleRuntimePointcutMethod()",
+            returning = "response")
+    public void logHandleRuntimeAfterReturning(ResponseEntity<AuthErrorResponse> response) {
+        log.error("Runtime ошибка: body='{}'.", response.getBody());
+    }
+
+    @AfterReturning(
+            pointcut = "handleOtherPointcutMethod()",
+            returning = "response")
+    public void logHandleOtherAfterReturning(ResponseEntity<AuthErrorResponse> response) {
+        log.error("Необработанная ошибка: body='{}'.", response.getBody());
     }
 }
