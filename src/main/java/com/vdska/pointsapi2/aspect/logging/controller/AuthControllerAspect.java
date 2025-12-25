@@ -1,5 +1,6 @@
 package com.vdska.pointsapi2.aspect.logging.controller;
 
+import com.vdska.pointsapi2.dto.token.OTPRequest;
 import com.vdska.pointsapi2.dto.user.LoginRequest;
 import com.vdska.pointsapi2.dto.user.RegisterRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,9 @@ public class AuthControllerAspect {
 
     @Pointcut("execution(public * com.vdska.pointsapi2.controller.AuthController.login(..))")
     public void loginPointcutMethod(){}
+
+    @Pointcut("execution(public * com.vdska.pointsapi2.controller.AuthController.otp(..))")
+    public void otpPointcutMethod(){}
 
     @Around("registerPointcutMethod()")
     public Object logAroundRegister(ProceedingJoinPoint pjp) throws Throwable {
@@ -71,7 +75,20 @@ public class AuthControllerAspect {
 
         result = pjp.proceed();
 
-        log.info("Эндпойнт /auth/login успешно вернул ответ: {}.", result);
+        log.info("Эндпойнт /auth/login для пользователя с username='{}' успешно вернул ответ.", username);
+        return result;
+    }
+
+    @Around("otpPointcutMethod()")
+    public Object logAroundOTP(ProceedingJoinPoint pjp) throws Throwable {
+        Object result;
+        OTPRequest otpRequest = ((OTPRequest) pjp.getArgs()[0]);
+
+        log.info("Запрос на эндпойнт /auth/otp: otp_code='{}' challenge_id='{}'.", otpRequest.getCode(), otpRequest.getChallengeId());
+
+        result = pjp.proceed();
+
+        log.info("Эндпойнт /auth/otp c параметрами otp_code='{}' challenge_id='{}' успешно вернул ответ.", otpRequest.getCode(), otpRequest.getChallengeId());
         return result;
     }
 }
