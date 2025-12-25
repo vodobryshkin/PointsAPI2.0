@@ -22,7 +22,7 @@ import java.util.Map;
 public class HitsController {
     private final IHitService hitService;
 
-    @PostMapping("/")
+    @PostMapping
     @PreAuthorize("hasRole('USER')")
     public AddHitResponse addHit(@RequestBody @Valid AddHitRequest addPointRequest,
                                                  Authentication authentication) {
@@ -31,7 +31,7 @@ public class HitsController {
         return hitService.addPoint(username, addPointRequest);
     }
 
-    @GetMapping("/")
+    @GetMapping
     @PreAuthorize("hasRole('USER')")
     public GetHitsPageResponse readPageOfHits(@RequestParam(name = "limit",  defaultValue = "20") int limit,
                                               @RequestParam(name = "offset", defaultValue = "0") int offset,
