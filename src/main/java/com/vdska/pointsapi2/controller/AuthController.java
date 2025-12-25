@@ -157,22 +157,27 @@ public class AuthController {
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<Void> refresh(@CookieValue(name = "refresh_token") String refreshToken) {
-        if (jwtService.isTokenValid(refreshToken)) {
-            String username = jwtService.extractUsername(refreshToken);
-            List<String> roles = getUserRoles(username);
-
-            String accessToken = jwtService.generateAccessToken(username, roles);
-
-            return ResponseEntity
-                    .ok()
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                    .header(HttpHeaders.SET_COOKIE, refreshToken)
-                    .build();
+    public ResponseEntity<Void> refresh(@CookieValue(name = "refresh_token", required = false) String refreshToken) {
+        if (refreshToken == null || !jwtService.isTokenValid(refreshToken)) {
+            return ResponseEntity.status(401).build();
         }
 
+        String username = jwtService.extractUsername(refreshToken);
+        List<String> roles = getUserRoles(username);
+
+        String accessToken = jwtService.generateAccessToken(username, roles);
+
+        ResponseCookie refreshCookie = ResponseCookie.from("refresh_token", refreshToken)
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Strict")
+                .path("/")
+                .build();
+
         return ResponseEntity
-                .status(401)
+                .ok()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .build();
     }
 
