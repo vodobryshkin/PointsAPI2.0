@@ -8,21 +8,21 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Контроллер, который обрабатывает запросы, приходящие на эндпойнт /auth/admin
+ * Контроллер, который обрабатывает запросы, приходящие на эндпойнт /areas
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/areas")
 public class AdminController {
     private final ACheckoutHitService checkoutHitService;
 
-    @GetMapping("/areas")
-    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping
+    @PreAuthorize("hasRole('USER')")
     public AreasFileDTO readAreas() {
         return checkoutHitService.getAreasData();
     }
 
-    @PostMapping("/areas")
+    @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> sendAreas(@RequestBody AreasFileDTO areasFileDTO) {
         checkoutHitService.updateResource(areasFileDTO);
