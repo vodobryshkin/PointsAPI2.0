@@ -119,6 +119,11 @@
             <artifactId>check-hit-spring-boot-starter</artifactId>
             <version>2.1.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
